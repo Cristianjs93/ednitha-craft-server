@@ -1,7 +1,7 @@
-import { Application } from 'express';
+import { type Application } from 'express';
 import healthcheckRouter from './api/healthcheck';
 
-const routes = (app: Application) => {
+const routes = (app: Application): void => {
   app.use('/api/healthcheck', healthcheckRouter);
 };
 
