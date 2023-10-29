@@ -1,17 +1,12 @@
-import express, { Request, Response } from 'express';
-import cors from 'cors';
-import morgan from 'morgan';
+import express from 'express';
+import configExpress from './config/express';
+import routes from './routes';
 
 const app = express();
-const port = 8080;
+const port = process.env.PORT || 8080;
 
-app.use(cors());
-app.use(morgan('dev'));
-app.use(express.json());
-
-app.get('/healthcheck', (req: Request, res: Response) => {
-  res.status(200).json({ message: 'Server ok' });
-});
+configExpress(app);
+routes(app);
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
