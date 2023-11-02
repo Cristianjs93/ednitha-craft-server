@@ -7,9 +7,10 @@
     "start": "node dist/app.js",
     "dev": "ts-node-dev --respawn src/app.ts",
     "build": "tsc",
-    "test": "jest --watchAll --detectOpenHandles",
-    "lint": "eslint . --ext ts,js,jsx --report-unused-disable-directives --max-warnings 0",
-    "eslint:fix": "eslint src --ext ts,js,jsx --fix"
+    "test": "jest --ci",
+    "test:watch": "jest --watchAll --detectOpenHandles",
+    "lint": "eslint --ext ts,js,jsx --report-unused-disable-directives --max-warnings 0",
+    "lint:fix": "eslint src --ext ts,js,jsx --fix"
   },
   "keywords": [],
   "author": "",

@@ -8,8 +8,8 @@ const port = process.env.PORT ?? 8080;
 configExpress(app);
 routes(app);
 
-app.listen(port, () => {
+const server = app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });
 
-export default app
+export default server

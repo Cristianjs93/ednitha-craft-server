@@ -1,7 +1,11 @@
-import supertest from 'supertest'
-import app from '../../app'
+import supertest from 'supertest';
+import server from '../../app'
 
-const request = supertest(app)
+const request = supertest(server);
+
+afterAll(async () => {
+  server.close()
+});
 
 describe('Healthcheck endpoint', () => {
   test('should respond with a 200 status code', async () => {
