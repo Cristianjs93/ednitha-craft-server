@@ -10,6 +10,16 @@ afterAll(async () => {
 });
 
 describe('User controller', () => {
+  describe('GET /api/users', () => {
+    test('Should return status 200 OK', async () => {
+      const response = await request.get('/api/user')
+
+      expect(response.status).toBe(200)
+      expect(response.body).toHaveProperty('message')
+      expect(response.body).toHaveProperty('data')
+      expect(response.body.message).toEqual('Users listed')
+    })
+  })
   describe('POST /api/users', () => {
     test('Should return error: Name must be at least 3 characters long', async () => {
       const user = {
@@ -52,7 +62,7 @@ describe('User controller', () => {
       expect(response.body).toHaveProperty('error')
       expect(response.body.error).toEqual('Email already exists')
     })
-    test('Should return 201 Created', async () => {
+    test('Should return status 201 Created', async () => {
       const user = {
         email: faker.internet.email(),
         name: faker.person.firstName(),
