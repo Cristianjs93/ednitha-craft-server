@@ -4,7 +4,13 @@ export interface User {
   password: string
 }
 
-export interface validatorError {
+export interface ValidatorError {
+  errors: object
+  _message: string
+  name: string
+  message: string
+}
+export interface ValidatorErrorField {
   name: string
   message: string
   properties: {

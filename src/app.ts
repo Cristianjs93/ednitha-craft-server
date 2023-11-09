@@ -1,12 +1,13 @@
-/* eslint-disable @typescript-eslint/no-floating-promises */
 import express from 'express';
 import configExpress from './config/express';
 import routes from './routes';
 import connect from './config/database';
 
 const app = express();
-connect()
-const port = process.env.PORT ?? 8080;
+
+void connect()
+
+const port = process.env.PORT ?? 8081;
 
 configExpress(app);
 routes(app);
