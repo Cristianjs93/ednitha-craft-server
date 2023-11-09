@@ -11,3 +11,14 @@ export const createUser = async (data: User): Promise<any> => {
     throw new Error(message)
   }
 }
+
+export const getAllUsers = async (): Promise<any> => {
+  try {
+    const users = await UserModel.find()
+    return users
+  } catch (error: unknown) {
+    // const message = validatorErrorHandler(error)
+    // throw new Error(message)
+    return error
+  }
+}

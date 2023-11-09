@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/strict-boolean-expressions */
-import { Schema, model, models } from 'mongoose';
+import { type Document, Schema, model, models } from 'mongoose';
 import { type User } from './user.types';
 import { nameRegex, emailRegex } from '../utils/regex';
 
-const userSchema = new Schema(
+export const userSchema = new Schema(
   {
     name: {
       type: String,
@@ -39,5 +39,7 @@ const userSchema = new Schema(
 )
 
 const UserModel = model('user', userSchema)
+
+export type UserDocument = User & Document;
 
 export default UserModel
