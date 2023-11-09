@@ -1,10 +1,12 @@
 import supertest from 'supertest';
 import server from '../../app'
 
+import mongoose from 'mongoose';
+
 const request = supertest(server);
 
 afterAll(async () => {
-  server.close()
+  await mongoose.disconnect();
 });
 
 describe('Healthcheck endpoint', () => {
@@ -14,3 +16,5 @@ describe('Healthcheck endpoint', () => {
     expect(res.body.message).toEqual('Server ok')
   })
 })
+
+server.close()
