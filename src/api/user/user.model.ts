@@ -1,7 +1,6 @@
-/* eslint-disable @typescript-eslint/strict-boolean-expressions */
 import { type Document, Schema, model, models } from 'mongoose';
 import { type User } from './user.types';
-import { nameRegex, emailRegex } from '../utils/regex';
+import { nameRegex, emailRegex, passwordRegex } from '../utils/regex';
 
 export const userSchema = new Schema(
   {
@@ -14,12 +13,13 @@ export const userSchema = new Schema(
     },
     email: {
       type: String,
+      required: [true, 'Email is required'],
       match: [emailRegex, 'Email is not valid'],
       validate: [{
         validator: async (value: string) => {
           try {
             const user = await models.user.findOne({ email: value }) as User ?? null
-            return !user
+            return user === null
           } catch (error) {
             return false
           }
@@ -29,7 +29,21 @@ export const userSchema = new Schema(
     },
     password: {
       type: String,
-      required: [true, 'Password is required']
+      required: [true, 'Password is required'],
+      match: [passwordRegex, 'Password is not valid']
+    },
+    avatar: {
+      type: String
+    },
+    role: {
+      type: String,
+      required: [true, ' Role is required'],
+      enum: { values: ['ADMIN', 'USER'], message: '{VALUE} role is not supported' }
+    },
+    active: {
+      type: Boolean,
+      required: false,
+      default: false
     }
   },
   {
