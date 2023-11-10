@@ -7,10 +7,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const express_2 = __importDefault(require("./config/express"));
 const routes_1 = __importDefault(require("./routes"));
+const database_1 = __importDefault(require("./config/database"));
 const app = (0, express_1.default)();
-const port = (_a = process.env.PORT) !== null && _a !== void 0 ? _a : 8080;
+void (0, database_1.default)();
+const port = (_a = process.env.PORT) !== null && _a !== void 0 ? _a : 8081;
 (0, express_2.default)(app);
 (0, routes_1.default)(app);
-app.listen(port, () => {
+const server = app.listen(port, () => {
     console.log(`Example app listening on port ${port}`);
 });
+exports.default = server;
