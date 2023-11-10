@@ -7,7 +7,7 @@ const app = express();
 
 void connect()
 
-const port = process.env.PORT ?? 8081;
+const port = process.env.PORT ?? 8080;
 
 configExpress(app);
 routes(app);
