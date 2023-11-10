@@ -1,6 +1,12 @@
 /* eslint-disable @typescript-eslint/strict-boolean-expressions */
 import { type Request, type Response } from 'express'
-import { createUser, getAllUsers, getUserByEmail, updateUser } from './user.services'
+import {
+  createUser,
+  getAllUsers,
+  getUserByEmail,
+  updateUser,
+  deleteUser
+} from './user.services'
 
 export const createUserHandler = async (req: Request, res: Response): Promise<void> => {
   try {
@@ -41,5 +47,15 @@ export const updateUserHandler = async (req: Request, res: Response): Promise<vo
     res.status(200).json({ message: 'User updated successfully', data: updatedUser })
   } catch (error: any) {
     res.status(400).json({ message: 'Error updating user', error: error.message })
+  }
+}
+
+export const deleteUserHandler = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { email } = req.body
+    const user = await deleteUser(email)
+    res.status(200).json({ message: 'User deleted successfully', data: user })
+  } catch (error: any) {
+    res.status(400).json({ message: 'Error deleting user', error: error.message })
   }
 }

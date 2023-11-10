@@ -54,3 +54,15 @@ export const updateUser = async (data: User): Promise<UserDocument> => {
     throw new Error(error.message)
   }
 }
+
+export const deleteUser = async (email: string): Promise<UserDocument> => {
+  try {
+    const user = await UserModel.findOneAndDelete({ email }) as UserDocument
+    if (user === null) {
+      throw new Error('User not found')
+    }
+    return user
+  } catch (error: any) {
+    throw new Error(error.message)
+  }
+}
