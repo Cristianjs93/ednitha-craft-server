@@ -1,4 +1,4 @@
-import { type Document, Schema, model, models } from 'mongoose';
+import { Schema, model, models } from 'mongoose';
 import { type User } from './user.types';
 import { nameRegex, emailRegex, passwordRegex } from '../utils/regex';
 
@@ -33,11 +33,12 @@ export const userSchema = new Schema(
       match: [passwordRegex, 'Password is not valid']
     },
     avatar: {
-      type: String
+      type: String,
+      required: false
     },
     role: {
       type: String,
-      required: [true, ' Role is required'],
+      required: [true, 'Role is required'],
       enum: { values: ['ADMIN', 'USER'], message: '{VALUE} role is not supported' }
     },
     active: {
@@ -53,7 +54,5 @@ export const userSchema = new Schema(
 )
 
 const UserModel = model('user', userSchema)
-
-export type UserDocument = User & Document;
 
 export default UserModel

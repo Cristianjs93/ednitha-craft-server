@@ -10,7 +10,7 @@ export const createUser = async (input: User): Promise<UserDocument> => {
       ...input,
       password: hashedPassword
     }
-    const user = await UserModel.create(newUser);
+    const user = await UserModel.create(newUser) as UserDocument
     return user
   } catch (error: any) {
     const message = validatorErrorHandler(error)
@@ -22,9 +22,9 @@ export const getAllUsers = async (): Promise<UserDocument[]> => {
   try {
     const users = await UserModel.find()
     if (users === null) {
-      throw new Error('Something went wrong, please try again later')
+      throw new Error('Something went wrong when getting all users, please try again later')
     }
-    return users
+    return users as UserDocument[]
   } catch (error: any) {
     throw new Error(error.message)
   }
