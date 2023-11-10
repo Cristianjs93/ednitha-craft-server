@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/strict-boolean-expressions */
 import { type Request, type Response } from 'express'
-import { createUser, getAllUsers, getUserByEmail } from './user.services'
+import { createUser, getAllUsers, getUserByEmail, updateUser } from './user.services'
 
 export const createUserHandler = async (req: Request, res: Response): Promise<void> => {
   try {
@@ -31,5 +31,15 @@ export const getUserByEmailHandler = async (req: Request, res: Response): Promis
     res.status(200).json({ message: 'User found', data: user })
   } catch (error: any) {
     res.status(400).json({ message: 'Error searching user', error: error.message })
+  }
+}
+
+export const updateUserHandler = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const data = req.body
+    const updatedUser = await updateUser(data)
+    res.status(200).json({ message: 'User updated successfully', data: updatedUser })
+  } catch (error: any) {
+    res.status(400).json({ message: 'Error updating user', error: error.message })
   }
 }

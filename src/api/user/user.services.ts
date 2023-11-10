@@ -41,3 +41,16 @@ export const getUserByEmail = async (email: string): Promise<UserDocument> => {
     throw new Error(error.message)
   }
 }
+
+export const updateUser = async (data: User): Promise<UserDocument> => {
+  try {
+    const { email } = data
+    const user = await UserModel.findOneAndUpdate({ email }, data, { new: true }) as UserDocument
+    if (user === null) {
+      throw new Error('User not found')
+    }
+    return user
+  } catch (error: any) {
+    throw new Error(error.message)
+  }
+}
