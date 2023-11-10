@@ -17,9 +17,7 @@ const app_1 = __importDefault(require("../../app"));
 const faker_1 = require("@faker-js/faker");
 const mongoose_1 = __importDefault(require("mongoose"));
 const request = (0, supertest_1.default)(app_1.default);
-afterEach(() => {
-    app_1.default.close();
-});
+app_1.default.close();
 afterAll(() => __awaiter(void 0, void 0, void 0, function* () {
     yield mongoose_1.default.disconnect();
 }));

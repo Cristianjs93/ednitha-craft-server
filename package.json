@@ -7,8 +7,8 @@
     "start": "node dist/app.js",
     "dev": "ts-node-dev --respawn src/app.ts",
     "build": "tsc",
-    "test": "cross-env PORT=8081 DB_CONNECTION_STRING=mongodb+srv://cjimenez1392:alcuadrado_18@adogta-db.42szhqj.mongodb.net/ednitha-craft-testdb jest --ci --testMatch '**/*.test.ts'",
-    "test:watch": "cross-env PORT=8081 DB_CONNECTION_STRING=mongodb+srv://cjimenez1392:alcuadrado_18@adogta-db.42szhqj.mongodb.net/ednitha-craft-testdb jest --ci --watchAll --detectOpenHandles --testMatch '**/*.test.ts'",
+    "test": "cross-env DB_CONNECTION_STRING=mongodb+srv://cjimenez1392:alcuadrado_18@adogta-db.42szhqj.mongodb.net/ednitha-craft-testdb jest --ci --testMatch '**/*.test.ts'",
+    "test:watch": "cross-env DB_CONNECTION_STRING=mongodb+srv://cjimenez1392:alcuadrado_18@adogta-db.42szhqj.mongodb.net/ednitha-craft-testdb jest --ci --watchAll --detectOpenHandles --testMatch '**/*.test.ts'",
     "lint": "eslint --ext ts,js,jsx --report-unused-disable-directives --max-warnings 0",
     "lint:fix": "eslint src --ext ts,js,jsx --fix"
   },
