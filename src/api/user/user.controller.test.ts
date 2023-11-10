@@ -5,6 +5,10 @@ import mongoose from 'mongoose';
 
 const request = supertest(server);
 
+afterEach(() => {
+  server.close()
+})
+
 afterAll(async () => {
   await mongoose.disconnect();
 });
@@ -110,6 +114,24 @@ describe('User controller', () => {
       expect(response.body.data).toMatchObject({ name: user.name })
     })
   })
-})
+  describe('PUT /api/users/update', () => {
+    test('Should return status 200', async () => {
+      const user = {
+        email: faker.internet.email(),
+        name: faker.person.firstName(),
+        password: 'Mypassword123',
+        role: 'USER'
+      }
+      const updatedUser = {
+        email: user.email,
+        name: 'John Doe'
+      }
+      await request.post('/api/user/register').send(user)
+      const response = await request.put('/api/user/update').send(updatedUser)
 
-server.close()
+      expect(response.status).toBe(200)
+      expect(response.body).toHaveProperty('data')
+      expect(response.body.data.name).toEqual(updatedUser.name)
+    })
+  })
+})
