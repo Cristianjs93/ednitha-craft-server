@@ -4,10 +4,7 @@ import { faker } from '@faker-js/faker';
 import mongoose from 'mongoose';
 
 const request = supertest(server);
-
-afterEach(() => {
-  server.close()
-})
+server.close()
 
 afterAll(async () => {
   await mongoose.disconnect();

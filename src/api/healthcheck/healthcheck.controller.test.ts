@@ -4,6 +4,7 @@ import server from '../../app'
 import mongoose from 'mongoose';
 
 const request = supertest(server);
+server.close()
 
 afterAll(async () => {
   await mongoose.disconnect();
@@ -16,5 +17,3 @@ describe('Healthcheck endpoint', () => {
     expect(res.body.message).toEqual('Server ok')
   })
 })
-
-server.close()
