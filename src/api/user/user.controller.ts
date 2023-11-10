@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/strict-boolean-expressions */
 import { type Request, type Response } from 'express'
-import { createUser, getAllUsers } from './user.services'
+import { createUser, getAllUsers, getUserByEmail } from './user.services'
 
 export const createUserHandler = async (req: Request, res: Response): Promise<void> => {
   try {
@@ -19,4 +19,12 @@ export const getAllUsersHandler = async (req: Request, res: Response): Promise<v
   } catch (error) {
     res.status(400).json({ message: 'Error listing users', error })
   }
+}
+
+export const getUserByEmailHandler = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { email } = req.body
+    const user = await getUserByEmail(email)
+    res.status(200).json({ message: 'User Found', data: user })
+  } catch (error) {}
 }
