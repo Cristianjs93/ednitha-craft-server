@@ -1,10 +1,16 @@
 import UserModel from './user.model'
 import { type User } from './user.types'
 import { validatorErrorHandler } from '../utils/errorHandler'
+import { hashPassword } from '../../auth/utils/bcrypt'
 
-export const createUser = async (data: User): Promise<any> => {
+export const createUser = async (input: User): Promise<any> => {
   try {
-    const user = await UserModel.create(data)
+    const hashedPassword = await hashPassword(input.password);
+    const newUser = {
+      ...input,
+      password: hashedPassword
+    }
+    const user = await UserModel.create(newUser);
     return user
   } catch (error: any) {
     const message = validatorErrorHandler(error)
@@ -17,8 +23,6 @@ export const getAllUsers = async (): Promise<any> => {
     const users = await UserModel.find()
     return users
   } catch (error: unknown) {
-    // const message = validatorErrorHandler(error)
-    // throw new Error(message)
     return error
   }
 }
