@@ -21,17 +21,23 @@ export const createUser = async (input: User): Promise<UserDocument> => {
 export const getAllUsers = async (): Promise<UserDocument[]> => {
   try {
     const users = await UserModel.find()
+    if (users === null) {
+      throw new Error('Something went wrong, please try again later')
+    }
     return users
   } catch (error: any) {
-    return error
+    throw new Error(error.message)
   }
 }
 
 export const getUserByEmail = async (email: string): Promise<UserDocument> => {
   try {
     const user = await UserModel.findOne({ email }) as UserDocument
+    if (user === null) {
+      throw new Error('User not found')
+    }
     return user
   } catch (error: any) {
-    return error
+    throw new Error(error.message)
   }
 }
