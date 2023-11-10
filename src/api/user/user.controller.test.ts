@@ -130,8 +130,29 @@ describe('User controller', () => {
       const response = await request.put('/api/user/update').send(updatedUser)
 
       expect(response.status).toBe(200)
+      expect(response.body).toHaveProperty('message')
+      expect(response.body.message).toEqual('User updated successfully')
       expect(response.body).toHaveProperty('data')
       expect(response.body.data.name).toEqual(updatedUser.name)
+    })
+  })
+  describe('DELETE /api/users/delete', () => {
+    test('Should return status 200', async () => {
+      const user = {
+        email: faker.internet.email(),
+        name: faker.person.firstName(),
+        password: 'Mypassword123',
+        role: 'USER'
+      }
+      const { email } = user
+      await request.post('/api/user/register').send(user)
+      const response = await request.delete('/api/user/delete').send({ email })
+
+      expect(response.status).toBe(200)
+      expect(response.body).toHaveProperty('message')
+      expect(response.body.message).toEqual('User deleted successfully')
+      expect(response.body).toHaveProperty('data')
+      expect(response.body.data.email).toEqual(email)
     })
   })
 })
