@@ -1,10 +1,9 @@
 import supertest from 'supertest';
-import server from '../../app'
+import app from '../../app'
 
 import mongoose from 'mongoose';
 
-const request = supertest(server);
-server.close()
+const request = supertest(app);
 
 afterAll(async () => {
   await mongoose.disconnect();
