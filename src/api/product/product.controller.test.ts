@@ -89,23 +89,27 @@ describe('Product controller', () => {
       expect(response.body.data.price).toEqual(parseInt(updatedProduct.price))
     })
   })
-  // describe('DELETE /api/users/delete', () => {
-  //   test('Should return status 200', async () => {
-  //     const user = {
-  //       email: faker.internet.email(),
-  //       name: faker.person.firstName(),
-  //       password: 'Mypassword123',
-  //       role: 'USER'
-  //     }
-  //     const { email } = user
-  //     await request.post('/api/user/register').send(user)
-  //     const response = await request.delete('/api/user/delete').send({ email })
+  describe('DELETE /api/product/delete', () => {
+    test('Should return status 200', async () => {
+      const product = {
+        image: 'https://picsum.photos/100/100',
+        name: faker.commerce.productName(),
+        description: faker.commerce.productDescription(),
+        price: faker.commerce.price({ min: 10, max: 500, dec: 0 })
+      }
 
-  //     expect(response.status).toBe(200)
-  //     expect(response.body).toHaveProperty('message')
-  //     expect(response.body.message).toEqual('User deleted successfully')
-  //     expect(response.body).toHaveProperty('data')
-  //     expect(response.body.data.email).toEqual(email)
-  //   })
-  // })
+      const productCreateResponse = await request.post('/api/product/create').send(product)
+
+      const _id = productCreateResponse.body.data._id
+
+      const response = await request.delete('/api/product/delete').send({ _id })
+
+      expect(response.status).toBe(200)
+      expect(response.body).toHaveProperty('message')
+      expect(response.body.message).toEqual('Product deleted successfully')
+      expect(response.body).toHaveProperty('data')
+      expect(response.body.data.name).toEqual(product.name)
+      expect(response.body.data.description).toEqual(product.description)
+    })
+  })
 })
