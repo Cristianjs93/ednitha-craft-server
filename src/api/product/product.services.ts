@@ -34,3 +34,15 @@ export const updateProduct = async (data: Product): Promise<ProductDocument> => 
     throw new Error(error.message)
   }
 }
+
+export const deleteProduct = async (_id: string): Promise<ProductDocument> => {
+  try {
+    const product = await ProductModel.findOneAndDelete({ _id }) as ProductDocument
+    if (product === null) {
+      throw new Error('Product not found')
+    }
+    return product
+  } catch (error: any) {
+    throw new Error(error.message)
+  }
+}
