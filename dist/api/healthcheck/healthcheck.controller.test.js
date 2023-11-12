@@ -16,7 +16,6 @@ const supertest_1 = __importDefault(require("supertest"));
 const app_1 = __importDefault(require("../../app"));
 const mongoose_1 = __importDefault(require("mongoose"));
 const request = (0, supertest_1.default)(app_1.default);
-app_1.default.close();
 afterAll(() => __awaiter(void 0, void 0, void 0, function* () {
     yield mongoose_1.default.disconnect();
 }));

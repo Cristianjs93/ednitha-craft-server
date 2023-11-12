@@ -44,11 +44,12 @@ exports.userSchema = new mongoose_1.Schema({
         match: [regex_1.passwordRegex, 'Password is not valid']
     },
     avatar: {
-        type: String
+        type: String,
+        required: false
     },
     role: {
         type: String,
-        required: [true, ' Role is required'],
+        required: [true, 'Role is required'],
         enum: { values: ['ADMIN', 'USER'], message: '{VALUE} role is not supported' }
     },
     active: {
