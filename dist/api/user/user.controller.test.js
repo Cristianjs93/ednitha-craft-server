@@ -17,48 +17,11 @@ const app_1 = __importDefault(require("../../app"));
 const faker_1 = require("@faker-js/faker");
 const mongoose_1 = __importDefault(require("mongoose"));
 const request = (0, supertest_1.default)(app_1.default);
-app_1.default.close();
 afterAll(() => __awaiter(void 0, void 0, void 0, function* () {
     yield mongoose_1.default.disconnect();
 }));
 describe('User controller', () => {
-    describe('GET /api/users', () => {
-        test('Should return status 200 OK', () => __awaiter(void 0, void 0, void 0, function* () {
-            const response = yield request.get('/api/user');
-            expect(response.status).toBe(200);
-            expect(response.body).toHaveProperty('message');
-            expect(response.body).toHaveProperty('data');
-            expect(response.body.message).toEqual('Users listed');
-        }));
-    });
-    describe('GET /api/users/email', () => {
-        test('Should return error: User not found', () => __awaiter(void 0, void 0, void 0, function* () {
-            const email = 'example@test.com';
-            const response = yield request.get('/api/user/email').send({ email });
-            expect(response.status).toBe(400);
-            expect(response.body).toHaveProperty('message');
-            expect(response.body.message).toEqual('Error searching user');
-            expect(response.body).toHaveProperty('error');
-            expect(response.body.error).toEqual('User not found');
-        }));
-        test('Should return status 200 OK', () => __awaiter(void 0, void 0, void 0, function* () {
-            const user = {
-                email: faker_1.faker.internet.email(),
-                name: faker_1.faker.person.firstName(),
-                password: 'Mypassword123',
-                role: 'USER'
-            };
-            const { email } = user;
-            yield request.post('/api/user/register').send(user);
-            const response = yield request.get('/api/user/email').send({ email });
-            expect(response.status).toBe(200);
-            expect(response.body).toHaveProperty('message');
-            expect(response.body.message).toEqual('User found');
-            expect(response.body).toHaveProperty('data');
-            expect(response.body.data.email).toEqual(email);
-        }));
-    });
-    describe('POST /api/users', () => {
+    describe('POST /api/user', () => {
         test('Should return error: Name must be at least 3 characters long', () => __awaiter(void 0, void 0, void 0, function* () {
             const user = {
                 email: 'abc123@test.com',
@@ -85,7 +48,7 @@ describe('User controller', () => {
         }));
         test('Should return error: Email already exists', () => __awaiter(void 0, void 0, void 0, function* () {
             const user = {
-                email: faker_1.faker.internet.email(),
+                email: faker_1.faker.internet.email({ firstName: faker_1.faker.person.firstName(), lastName: faker_1.faker.person.lastName(), provider: 'test.com', allowSpecialCharacters: true }),
                 name: faker_1.faker.person.firstName(),
                 password: 'Mypassword123',
                 role: 'USER'
@@ -99,7 +62,7 @@ describe('User controller', () => {
         }));
         test('Should return status 201 Created', () => __awaiter(void 0, void 0, void 0, function* () {
             const user = {
-                email: faker_1.faker.internet.email(),
+                email: faker_1.faker.internet.email({ firstName: faker_1.faker.person.firstName(), lastName: faker_1.faker.person.lastName(), provider: 'test.com', allowSpecialCharacters: true }),
                 name: faker_1.faker.person.firstName(),
                 password: 'Mypassword123',
                 role: 'USER'
@@ -110,10 +73,46 @@ describe('User controller', () => {
             expect(response.body.data).toMatchObject({ name: user.name });
         }));
     });
-    describe('PUT /api/users/update', () => {
+    describe('GET /api/user', () => {
+        test('Should return status 200 OK', () => __awaiter(void 0, void 0, void 0, function* () {
+            const response = yield request.get('/api/user');
+            expect(response.status).toBe(200);
+            expect(response.body).toHaveProperty('message');
+            expect(response.body).toHaveProperty('data');
+            expect(response.body.message).toEqual('Users listed');
+        }));
+    });
+    describe('GET /api/user/email', () => {
+        test('Should return error: User not found', () => __awaiter(void 0, void 0, void 0, function* () {
+            const email = 'example@test.com';
+            const response = yield request.get('/api/user/email').send({ email });
+            expect(response.status).toBe(400);
+            expect(response.body).toHaveProperty('message');
+            expect(response.body.message).toEqual('Error searching user');
+            expect(response.body).toHaveProperty('error');
+            expect(response.body.error).toEqual('User not found');
+        }));
+        test('Should return status 200 OK', () => __awaiter(void 0, void 0, void 0, function* () {
+            const user = {
+                email: faker_1.faker.internet.email({ firstName: faker_1.faker.person.firstName(), lastName: faker_1.faker.person.lastName(), provider: 'test.com', allowSpecialCharacters: true }),
+                name: faker_1.faker.person.firstName(),
+                password: 'Mypassword123',
+                role: 'USER'
+            };
+            const { email } = user;
+            yield request.post('/api/user/register').send(user);
+            const response = yield request.get('/api/user/email').send({ email });
+            expect(response.status).toBe(200);
+            expect(response.body).toHaveProperty('message');
+            expect(response.body.message).toEqual('User found');
+            expect(response.body).toHaveProperty('data');
+            expect(response.body.data.email).toEqual(email);
+        }));
+    });
+    describe('PUT /api/user/update', () => {
         test('Should return status 200', () => __awaiter(void 0, void 0, void 0, function* () {
             const user = {
-                email: faker_1.faker.internet.email(),
+                email: faker_1.faker.internet.email({ firstName: faker_1.faker.person.firstName(), lastName: faker_1.faker.person.lastName(), provider: 'test.com', allowSpecialCharacters: true }),
                 name: faker_1.faker.person.firstName(),
                 password: 'Mypassword123',
                 role: 'USER'
@@ -131,10 +130,10 @@ describe('User controller', () => {
             expect(response.body.data.name).toEqual(updatedUser.name);
         }));
     });
-    describe('DELETE /api/users/delete', () => {
+    describe('DELETE /api/user/delete', () => {
         test('Should return status 200', () => __awaiter(void 0, void 0, void 0, function* () {
             const user = {
-                email: faker_1.faker.internet.email(),
+                email: faker_1.faker.internet.email({ firstName: faker_1.faker.person.firstName(), lastName: faker_1.faker.person.lastName(), provider: 'test.com', allowSpecialCharacters: true }),
                 name: faker_1.faker.person.firstName(),
                 password: 'Mypassword123',
                 role: 'USER'

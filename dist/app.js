@@ -13,7 +13,9 @@ void (0, database_1.default)();
 const port = (_a = process.env.PORT) !== null && _a !== void 0 ? _a : 8080;
 (0, express_2.default)(app);
 (0, routes_1.default)(app);
-const server = app.listen(port, () => {
-    console.log(`Example app listening on port ${port}`);
-});
-exports.default = server;
+if (process.env.NODE_ENV !== 'test') {
+    app.listen(port, () => {
+        console.log(`Example app listening on port ${port}`);
+    });
+}
+exports.default = app;

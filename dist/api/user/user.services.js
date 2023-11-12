@@ -33,7 +33,7 @@ const getAllUsers = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const users = yield user_model_1.default.find();
         if (users === null) {
-            throw new Error('Something went wrong, please try again later');
+            throw new Error('Something went wrong when getting all users, please try again later');
         }
         return users;
     }
