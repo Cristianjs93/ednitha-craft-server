@@ -1,5 +1,5 @@
 import { type Request, type Response } from 'express'
-import { createProduct, getallProducts } from './product.services'
+import { createProduct, getallProducts, updateProduct } from './product.services'
 
 export const createProductHandler = async (req: Request, res: Response): Promise<void> => {
   try {
@@ -17,5 +17,16 @@ export const getallProductsHandler = async (req: Request, res: Response): Promis
     res.status(200).json({ message: 'Products listed', data: products })
   } catch (error: any) {
     res.status(400).json({ message: 'Error listing products', error: error.message })
+  }
+}
+
+export const updateProductHandler = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const data = req.body
+    const updatedProduct = await updateProduct(data)
+    console.log(updatedProduct)
+    res.status(200).json({ message: 'Product updated successfully', data: updatedProduct })
+  } catch (error: any) {
+    res.status(400).json({ message: 'Error updating product', error: error.message })
   }
 }
