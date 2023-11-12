@@ -3,13 +3,19 @@ export interface User {
   name: string
   email: string
   password: string
+  avatar?: string
+  role: string
+  active: boolean
 }
 
 export interface UserDocument {
+  _id: Types.ObjectId
   name: string
   email: string
   password: string
-  _id: Types.ObjectId
+  avatar?: string
+  role: string
+  active: boolean
   createdAt: Date
   updatedAt: Date
 }
