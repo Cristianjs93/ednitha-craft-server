@@ -24,7 +24,6 @@ export const updateProductHandler = async (req: Request, res: Response): Promise
   try {
     const data = req.body
     const updatedProduct = await updateProduct(data)
-    console.log(updatedProduct)
     res.status(200).json({ message: 'Product updated successfully', data: updatedProduct })
   } catch (error: any) {
     res.status(400).json({ message: 'Error updating product', error: error.message })

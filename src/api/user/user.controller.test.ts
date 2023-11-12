@@ -41,7 +41,7 @@ describe('User controller', () => {
     })
     test('Should return error: Email already exists', async () => {
       const user = {
-        email: faker.internet.email(),
+        email: faker.internet.email({ firstName: faker.person.firstName(), lastName: faker.person.lastName(), provider: 'test.com', allowSpecialCharacters: true }),
         name: faker.person.firstName(),
         password: 'Mypassword123',
         role: 'USER'
@@ -57,7 +57,7 @@ describe('User controller', () => {
     })
     test('Should return status 201 Created', async () => {
       const user = {
-        email: faker.internet.email(),
+        email: faker.internet.email({ firstName: faker.person.firstName(), lastName: faker.person.lastName(), provider: 'test.com', allowSpecialCharacters: true }),
         name: faker.person.firstName(),
         password: 'Mypassword123',
         role: 'USER'
@@ -93,7 +93,7 @@ describe('User controller', () => {
     })
     test('Should return status 200 OK', async () => {
       const user = {
-        email: faker.internet.email(),
+        email: faker.internet.email({ firstName: faker.person.firstName(), lastName: faker.person.lastName(), provider: 'test.com', allowSpecialCharacters: true }),
         name: faker.person.firstName(),
         password: 'Mypassword123',
         role: 'USER'
@@ -113,7 +113,7 @@ describe('User controller', () => {
   describe('PUT /api/user/update', () => {
     test('Should return status 200', async () => {
       const user = {
-        email: faker.internet.email(),
+        email: faker.internet.email({ firstName: faker.person.firstName(), lastName: faker.person.lastName(), provider: 'test.com', allowSpecialCharacters: true }),
         name: faker.person.firstName(),
         password: 'Mypassword123',
         role: 'USER'
@@ -135,7 +135,7 @@ describe('User controller', () => {
   describe('DELETE /api/user/delete', () => {
     test('Should return status 200', async () => {
       const user = {
-        email: faker.internet.email(),
+        email: faker.internet.email({ firstName: faker.person.firstName(), lastName: faker.person.lastName(), provider: 'test.com', allowSpecialCharacters: true }),
         name: faker.person.firstName(),
         password: 'Mypassword123',
         role: 'USER'
