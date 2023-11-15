@@ -52,6 +52,8 @@ describe('Product controller', () => {
       const response = await request.post('/api/product/create').send(product)
 
       expect(response.status).toBe(201)
+      expect(response.body).toHaveProperty('message')
+      expect(response.body.message).toEqual('Product created successfully')
       expect(response.body.data).toHaveProperty('_id')
       expect(response.body.data).toMatchObject({ name: product.name })
     })

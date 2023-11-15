@@ -14,7 +14,7 @@ export const ReviewSchema = new Schema(
     comments: {
       type: String,
       required: [true, 'Comments are required'],
-      minlength: [4, 'Review description must be at least 4 characters long']
+      minlength: [4, 'Comments must be at least 4 characters long']
     }
   },
   {
