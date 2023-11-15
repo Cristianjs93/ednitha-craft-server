@@ -78,10 +78,12 @@ describe('Product controller', () => {
       }
 
       const productCreateResponse = await request.post('/api/product/create').send(product)
+
       const updatedProduct = {
         _id: productCreateResponse.body.data._id,
         price: faker.commerce.price({ min: 10, max: 500, dec: 0 })
       }
+
       const response = await request.put('/api/product/update').send(updatedProduct)
 
       expect(response.status).toBe(200)

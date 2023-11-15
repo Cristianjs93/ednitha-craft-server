@@ -67,4 +67,28 @@ describe('Review controller', () => {
       expect(response.body.message).toEqual('Reviews listed')
     })
   })
+  describe('PUT /api/review/update', () => {
+    test('Should return status 200', async () => {
+      const review = {
+        rating: faker.number.int({ min: 1, max: 5 }),
+        title: faker.commerce.productAdjective(),
+        comments: faker.commerce.productDescription()
+      }
+
+      const reviewCreateResponse = await request.post('/api/review/create').send(review)
+
+      const updatedReview = {
+        _id: reviewCreateResponse.body.data._id,
+        comments: faker.commerce.productDescription()
+      }
+
+      const response = await request.put('/api/review/update').send(updatedReview)
+
+      expect(response.status).toBe(200)
+      expect(response.body).toHaveProperty('message')
+      expect(response.body.message).toEqual('Review updated successfully')
+      expect(response.body).toHaveProperty('data')
+      expect(response.body.data.comments).toEqual(updatedReview.comments)
+    })
+  })
 })
