@@ -12,3 +12,15 @@ export const createReview = async (input: Review): Promise<ReviewDocument> => {
     throw new Error(message)
   }
 }
+
+export const getAllReviews = async (): Promise<ReviewDocument[]> => {
+  try {
+    const reviews = await ReviewModel.find()
+    if (reviews === null) {
+      throw new Error('Something went wrong when getting all reviews, please try again later')
+    }
+    return reviews as ReviewDocument[]
+  } catch (error: any) {
+    throw new Error(error.message)
+  }
+}
