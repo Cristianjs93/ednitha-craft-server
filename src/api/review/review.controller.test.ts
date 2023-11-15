@@ -91,4 +91,26 @@ describe('Review controller', () => {
       expect(response.body.data.comments).toEqual(updatedReview.comments)
     })
   })
+  describe('DELETE /api/review/delete', () => {
+    test('Should return status 200', async () => {
+      const review = {
+        rating: faker.number.int({ min: 1, max: 5 }),
+        title: faker.commerce.productAdjective(),
+        comments: faker.commerce.productDescription()
+      }
+
+      const reviewCreateResponse = await request.post('/api/review/create').send(review)
+
+      const _id = reviewCreateResponse.body.data._id
+
+      const response = await request.delete('/api/review/delete').send({ _id })
+
+      expect(response.status).toBe(200)
+      expect(response.body).toHaveProperty('message')
+      expect(response.body.message).toEqual('Review deleted successfully')
+      expect(response.body).toHaveProperty('data')
+      expect(response.body.data.title).toEqual(review.title)
+      expect(response.body.data.comments).toEqual(review.comments)
+    })
+  })
 })
