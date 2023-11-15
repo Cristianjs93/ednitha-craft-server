@@ -57,4 +57,14 @@ describe('Review controller', () => {
       expect(response.body.data).toMatchObject({ title: review.title })
     })
   })
+  describe('GET /api/review', () => {
+    test('Should return status 200 OK', async () => {
+      const response = await request.get('/api/review')
+
+      expect(response.status).toBe(200)
+      expect(response.body).toHaveProperty('message')
+      expect(response.body).toHaveProperty('data')
+      expect(response.body.message).toEqual('Reviews listed')
+    })
+  })
 })
