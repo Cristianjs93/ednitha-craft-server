@@ -65,6 +65,8 @@ describe('User controller', () => {
       const response = await request.post('/api/user/register').send(user)
 
       expect(response.status).toBe(201)
+      expect(response.body).toHaveProperty('message')
+      expect(response.body.message).toEqual('User created successfully')
       expect(response.body.data).toHaveProperty('_id')
       expect(response.body.data).toMatchObject({ name: user.name })
     })
