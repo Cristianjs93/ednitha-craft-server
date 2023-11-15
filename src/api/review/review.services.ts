@@ -24,3 +24,13 @@ export const getAllReviews = async (): Promise<ReviewDocument[]> => {
     throw new Error(error.message)
   }
 }
+
+export const updateReview = async (data: Review): Promise<ReviewDocument> => {
+  try {
+    const { _id } = data
+    const review = await ReviewModel.findOneAndUpdate({ _id }, data, { new: true }) as ReviewDocument
+    return review
+  } catch (error: any) {
+    throw new Error(error.message)
+  }
+}
