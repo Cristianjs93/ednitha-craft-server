@@ -34,3 +34,15 @@ export const updateReview = async (data: Review): Promise<ReviewDocument> => {
     throw new Error(error.message)
   }
 }
+
+export const deleteReview = async (_id: string): Promise<ReviewDocument> => {
+  try {
+    const review = await ReviewModel.findOneAndDelete({ _id }) as ReviewDocument
+    if (review === null) {
+      throw new Error('Review not found')
+    }
+    return review
+  } catch (error: any) {
+    throw new Error(error.message)
+  }
+}

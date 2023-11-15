@@ -2,7 +2,8 @@ import { type Request, type Response } from 'express'
 import {
   createReview,
   getAllReviews,
-  updateReview
+  updateReview,
+  deleteReview
 } from './review.services'
 
 export const createReviewHandler = async (req: Request, res: Response): Promise<void> => {
@@ -31,5 +32,15 @@ export const updateReviewHandler = async (req: Request, res: Response): Promise<
     res.status(200).json({ message: 'Review updated successfully', data: updatedReview })
   } catch (error: any) {
     res.status(400).json({ message: 'Error updating review', error: error.message })
+  }
+}
+
+export const deleteReviewHandler = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { _id } = req.body
+    const review = await deleteReview(_id)
+    res.status(200).json({ message: 'Review deleted successfully', data: review })
+  } catch (error: any) {
+    res.status(400).json({ message: 'Error deleting review', error: error.message })
   }
 }
