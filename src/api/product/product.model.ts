@@ -18,6 +18,10 @@ export const ProductSchema = new Schema(
     price: {
       type: Number,
       required: [true, 'Product price is required']
+    },
+    reviews: {
+      type: [{ type: Schema.Types.ObjectId, ref: 'review' }],
+      required: false
     }
   },
   {

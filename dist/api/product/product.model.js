@@ -19,6 +19,10 @@ exports.ProductSchema = new mongoose_1.Schema({
     price: {
         type: Number,
         required: [true, 'Product price is required']
+    },
+    reviews: {
+        type: [{ type: mongoose_1.Schema.Types.ObjectId, ref: 'review' }],
+        required: false
     }
 }, {
     timestamps: true,

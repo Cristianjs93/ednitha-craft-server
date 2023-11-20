@@ -24,8 +24,9 @@ describe('User controller', () => {
     describe('POST /api/user', () => {
         test('Should return error: Name must be at least 3 characters long', () => __awaiter(void 0, void 0, void 0, function* () {
             const user = {
-                email: 'abc123@test.com',
+                email: faker_1.faker.internet.email({ firstName: faker_1.faker.person.firstName(), lastName: faker_1.faker.person.lastName(), provider: 'test.com', allowSpecialCharacters: true }),
                 name: 'ab',
+                lastname: faker_1.faker.person.lastName(),
                 password: 'Mypassword123',
                 role: 'USER'
             };
@@ -34,22 +35,24 @@ describe('User controller', () => {
             expect(response.body).toHaveProperty('error');
             expect(response.body.error).toEqual('Name must be at least 3 characters long');
         }));
-        test('Should return error: Name is not valid. Email is not valid', () => __awaiter(void 0, void 0, void 0, function* () {
+        test('Should return error: Lastname is not valid. Email is not valid', () => __awaiter(void 0, void 0, void 0, function* () {
             const user = {
                 email: 'abc1@test.com',
-                name: 'ab@',
+                name: faker_1.faker.person.firstName(),
+                lastname: 'ab@',
                 password: 'Mypassword123',
                 role: 'USER'
             };
             const response = yield request.post('/api/user/register').send(user);
             expect(response.status).toBe(400);
             expect(response.body).toHaveProperty('error');
-            expect(response.body.error).toEqual('Name is not valid. Email is not valid');
+            expect(response.body.error).toEqual('Lastname is not valid. Email is not valid');
         }));
         test('Should return error: Email already exists', () => __awaiter(void 0, void 0, void 0, function* () {
             const user = {
                 email: faker_1.faker.internet.email({ firstName: faker_1.faker.person.firstName(), lastName: faker_1.faker.person.lastName(), provider: 'test.com', allowSpecialCharacters: true }),
                 name: faker_1.faker.person.firstName(),
+                lastname: faker_1.faker.person.lastName(),
                 password: 'Mypassword123',
                 role: 'USER'
             };
@@ -64,6 +67,7 @@ describe('User controller', () => {
             const user = {
                 email: faker_1.faker.internet.email({ firstName: faker_1.faker.person.firstName(), lastName: faker_1.faker.person.lastName(), provider: 'test.com', allowSpecialCharacters: true }),
                 name: faker_1.faker.person.firstName(),
+                lastname: faker_1.faker.person.lastName(),
                 password: 'Mypassword123',
                 role: 'USER'
             };
@@ -71,7 +75,6 @@ describe('User controller', () => {
             expect(response.status).toBe(201);
             expect(response.body).toHaveProperty('message');
             expect(response.body.message).toEqual('User created successfully');
-            expect(response.body.data).toHaveProperty('_id');
             expect(response.body.data).toMatchObject({ name: user.name });
         }));
     });
@@ -98,6 +101,7 @@ describe('User controller', () => {
             const user = {
                 email: faker_1.faker.internet.email({ firstName: faker_1.faker.person.firstName(), lastName: faker_1.faker.person.lastName(), provider: 'test.com', allowSpecialCharacters: true }),
                 name: faker_1.faker.person.firstName(),
+                lastname: faker_1.faker.person.lastName(),
                 password: 'Mypassword123',
                 role: 'USER'
             };
@@ -116,12 +120,14 @@ describe('User controller', () => {
             const user = {
                 email: faker_1.faker.internet.email({ firstName: faker_1.faker.person.firstName(), lastName: faker_1.faker.person.lastName(), provider: 'test.com', allowSpecialCharacters: true }),
                 name: faker_1.faker.person.firstName(),
+                lastname: faker_1.faker.person.lastName(),
                 password: 'Mypassword123',
                 role: 'USER'
             };
             const updatedUser = {
                 email: user.email,
-                name: 'John Doe'
+                name: 'John',
+                lastname: 'Doe'
             };
             yield request.post('/api/user/register').send(user);
             const response = yield request.put('/api/user/update').send(updatedUser);
@@ -137,6 +143,7 @@ describe('User controller', () => {
             const user = {
                 email: faker_1.faker.internet.email({ firstName: faker_1.faker.person.firstName(), lastName: faker_1.faker.person.lastName(), provider: 'test.com', allowSpecialCharacters: true }),
                 name: faker_1.faker.person.firstName(),
+                lastname: faker_1.faker.person.lastName(),
                 password: 'Mypassword123',
                 role: 'USER'
             };

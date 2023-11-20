@@ -11,10 +11,17 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteReviewHandler = exports.updateReviewHandler = exports.getAllReviewsHandler = exports.createReviewHandler = void 0;
 const review_services_1 = require("./review.services");
+const reviewUtils_1 = require("../utils/reviewUtils");
 const createReviewHandler = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const data = req.body;
+        const { user: userEmail, product: productId } = req.body;
+        const validator = yield (0, reviewUtils_1.reviewValidator)(userEmail, productId);
+        const { user, user: { _id }, product } = validator;
+        const data = Object.assign(Object.assign({}, req.body), { user: _id });
         const review = yield (0, review_services_1.createReview)(data);
+        if (typeof review._id === 'object') {
+            yield (0, reviewUtils_1.reviewPopulate)(user, product, review);
+        }
         res.status(201).json({ message: 'Review created successfully', data: review });
     }
     catch (error) {
@@ -45,8 +52,9 @@ const updateReviewHandler = (req, res) => __awaiter(void 0, void 0, void 0, func
 exports.updateReviewHandler = updateReviewHandler;
 const deleteReviewHandler = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { _id } = req.body;
-        const review = yield (0, review_services_1.deleteReview)(_id);
+        const { user, productId, reviewId } = req.body;
+        yield (0, reviewUtils_1.reviewRemove)(user, productId, reviewId);
+        const review = yield (0, review_services_1.deleteReview)(reviewId);
         res.status(200).json({ message: 'Review deleted successfully', data: review });
     }
     catch (error) {

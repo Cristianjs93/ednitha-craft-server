@@ -5,6 +5,7 @@ import {
   updateProduct,
   deleteProduct
 } from './product.services'
+import { productReviewsRemove } from '../utils/productUtils'
 
 export const createProductHandler = async (req: Request, res: Response): Promise<void> => {
   try {
@@ -38,6 +39,7 @@ export const updateProductHandler = async (req: Request, res: Response): Promise
 export const deleteProductHandler = async (req: Request, res: Response): Promise<void> => {
   try {
     const { _id } = req.body
+    await productReviewsRemove(_id)
     const product = await deleteProduct(_id)
     res.status(200).json({ message: 'Product deleted successfully', data: product })
   } catch (error: any) {

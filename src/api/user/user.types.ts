@@ -1,4 +1,4 @@
-import { type Types } from 'mongoose'
+import { type Types, type Document } from 'mongoose'
 export interface User {
   name: string
   email: string
@@ -6,18 +6,17 @@ export interface User {
   avatar?: string
   role: string
   active: boolean
+  reviews?: Types.ObjectId[]
 }
 
-export interface UserDocument {
-  _id: Types.ObjectId
+export interface UserDocument extends Document {
   name: string
   email: string
   password: string
   avatar?: string
   role: string
   active: boolean
-  createdAt: Date
-  updatedAt: Date
+  reviews?: Types.ObjectId[]
 }
 
 export interface ValidatorError {

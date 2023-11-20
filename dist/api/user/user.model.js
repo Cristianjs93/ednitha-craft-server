@@ -20,6 +20,13 @@ exports.userSchema = new mongoose_1.Schema({
         minlength: [3, 'Name must be at least 3 characters long'],
         maxlength: [15, 'Name must be at most 15 characters long']
     },
+    lastname: {
+        type: String,
+        required: [true, 'Lastname is required'],
+        match: [regex_1.nameRegex, 'Lastname is not valid'],
+        minlength: [3, 'Lastname must be at least 3 characters long'],
+        maxlength: [20, 'Lastname must be at most 15 characters long']
+    },
     email: {
         type: String,
         required: [true, 'Email is required'],
@@ -56,6 +63,10 @@ exports.userSchema = new mongoose_1.Schema({
         type: Boolean,
         required: false,
         default: false
+    },
+    reviews: {
+        type: [{ type: mongoose_1.Schema.Types.ObjectId, ref: 'review' }],
+        required: false
     }
 }, {
     timestamps: true,
