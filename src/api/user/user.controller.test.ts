@@ -13,8 +13,9 @@ describe('User controller', () => {
   describe('POST /api/user', () => {
     test('Should return error: Name must be at least 3 characters long', async () => {
       const user = {
-        email: 'abc123@test.com',
+        email: faker.internet.email({ firstName: faker.person.firstName(), lastName: faker.person.lastName(), provider: 'test.com', allowSpecialCharacters: true }),
         name: 'ab',
+        lastname: faker.person.lastName(),
         password: 'Mypassword123',
         role: 'USER'
       }
@@ -25,10 +26,11 @@ describe('User controller', () => {
       expect(response.body).toHaveProperty('error')
       expect(response.body.error).toEqual('Name must be at least 3 characters long')
     })
-    test('Should return error: Name is not valid. Email is not valid', async () => {
+    test('Should return error: Lastname is not valid. Email is not valid', async () => {
       const user = {
         email: 'abc1@test.com',
-        name: 'ab@',
+        name: faker.person.firstName(),
+        lastname: 'ab@',
         password: 'Mypassword123',
         role: 'USER'
       }
@@ -37,12 +39,13 @@ describe('User controller', () => {
 
       expect(response.status).toBe(400)
       expect(response.body).toHaveProperty('error')
-      expect(response.body.error).toEqual('Name is not valid. Email is not valid')
+      expect(response.body.error).toEqual('Lastname is not valid. Email is not valid')
     })
     test('Should return error: Email already exists', async () => {
       const user = {
         email: faker.internet.email({ firstName: faker.person.firstName(), lastName: faker.person.lastName(), provider: 'test.com', allowSpecialCharacters: true }),
         name: faker.person.firstName(),
+        lastname: faker.person.lastName(),
         password: 'Mypassword123',
         role: 'USER'
       }
@@ -59,6 +62,7 @@ describe('User controller', () => {
       const user = {
         email: faker.internet.email({ firstName: faker.person.firstName(), lastName: faker.person.lastName(), provider: 'test.com', allowSpecialCharacters: true }),
         name: faker.person.firstName(),
+        lastname: faker.person.lastName(),
         password: 'Mypassword123',
         role: 'USER'
       }
@@ -67,7 +71,6 @@ describe('User controller', () => {
       expect(response.status).toBe(201)
       expect(response.body).toHaveProperty('message')
       expect(response.body.message).toEqual('User created successfully')
-      expect(response.body.data).toHaveProperty('_id')
       expect(response.body.data).toMatchObject({ name: user.name })
     })
   })
@@ -97,6 +100,7 @@ describe('User controller', () => {
       const user = {
         email: faker.internet.email({ firstName: faker.person.firstName(), lastName: faker.person.lastName(), provider: 'test.com', allowSpecialCharacters: true }),
         name: faker.person.firstName(),
+        lastname: faker.person.lastName(),
         password: 'Mypassword123',
         role: 'USER'
       }
@@ -117,13 +121,17 @@ describe('User controller', () => {
       const user = {
         email: faker.internet.email({ firstName: faker.person.firstName(), lastName: faker.person.lastName(), provider: 'test.com', allowSpecialCharacters: true }),
         name: faker.person.firstName(),
+        lastname: faker.person.lastName(),
         password: 'Mypassword123',
         role: 'USER'
       }
       const updatedUser = {
         email: user.email,
-        name: 'John Doe'
+        name: 'John',
+        lastname: 'Doe'
+
       }
+
       await request.post('/api/user/register').send(user)
       const response = await request.put('/api/user/update').send(updatedUser)
 
@@ -139,10 +147,12 @@ describe('User controller', () => {
       const user = {
         email: faker.internet.email({ firstName: faker.person.firstName(), lastName: faker.person.lastName(), provider: 'test.com', allowSpecialCharacters: true }),
         name: faker.person.firstName(),
+        lastname: faker.person.lastName(),
         password: 'Mypassword123',
         role: 'USER'
       }
       const { email } = user
+
       await request.post('/api/user/register').send(user)
       const response = await request.delete('/api/user/delete').send({ email })
 

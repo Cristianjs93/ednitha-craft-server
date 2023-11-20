@@ -16,7 +16,7 @@ export const userSchema = new Schema(
       required: [true, 'Lastname is required'],
       match: [nameRegex, 'Lastname is not valid'],
       minlength: [3, 'Lastname must be at least 3 characters long'],
-      maxlength: [15, 'Lastname must be at most 15 characters long']
+      maxlength: [20, 'Lastname must be at most 15 characters long']
     },
     email: {
       type: String,
