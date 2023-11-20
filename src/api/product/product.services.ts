@@ -15,7 +15,7 @@ export const createProduct = async (input: Product): Promise<ProductDocument> =>
 
 export const getallProducts = async (): Promise<ProductDocument[]> => {
   try {
-    const products = await ProductModel.find()
+    const products = await ProductModel.find().populate({ path: 'reviews', populate: { path: 'user', select: 'name email -_id' } })
     if (products === null) {
       throw new Error('Something went wrong when getting all products, please try again later')
     }

@@ -11,6 +11,13 @@ export const userSchema = new Schema(
       minlength: [3, 'Name must be at least 3 characters long'],
       maxlength: [15, 'Name must be at most 15 characters long']
     },
+    lastname: {
+      type: String,
+      required: [true, 'Lastname is required'],
+      match: [nameRegex, 'Lastname is not valid'],
+      minlength: [3, 'Lastname must be at least 3 characters long'],
+      maxlength: [15, 'Lastname must be at most 15 characters long']
+    },
     email: {
       type: String,
       required: [true, 'Email is required'],
@@ -45,6 +52,10 @@ export const userSchema = new Schema(
       type: Boolean,
       required: false,
       default: false
+    },
+    reviews: {
+      type: [{ type: Schema.Types.ObjectId, ref: 'review' }],
+      required: false
     }
   },
   {

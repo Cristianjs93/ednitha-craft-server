@@ -15,6 +15,16 @@ export const ReviewSchema = new Schema(
       type: String,
       required: [true, 'Comments are required'],
       minlength: [4, 'Comments must be at least 4 characters long']
+    },
+    product: {
+      type: Schema.Types.ObjectId,
+      ref: 'product',
+      required: [true, 'Product for review is required']
+    },
+    user: {
+      type: Schema.Types.ObjectId,
+      ref: 'user',
+      required: [true, 'User for review is required']
     }
   },
   {

@@ -1,17 +1,18 @@
-import { type Types } from 'mongoose'
+import { type Types, type Document } from 'mongoose'
 
 export interface Review {
   _id?: Types.ObjectId
   rating: number
   title: string
   comments: string
+  product: Types.ObjectId
+  user: Types.ObjectId
 }
 
-export interface ReviewDocument {
-  _id: Types.ObjectId
+export interface ReviewDocument extends Document {
   rating: number
   title: string
   comments: string
-  createdAt: Date
-  updatedAt: Date
+  product: Types.ObjectId
+  user: Types.ObjectId
 }

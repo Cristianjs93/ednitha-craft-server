@@ -5,11 +5,24 @@ import {
   updateReview,
   deleteReview
 } from './review.services'
+import { reviewValidator, reviewPopulate, reviewRemove } from '../utils/reviewUtils'
 
 export const createReviewHandler = async (req: Request, res: Response): Promise<void> => {
   try {
-    const data = req.body
+    const { user: userEmail, product: productId } = req.body
+
+    const validator = await reviewValidator(userEmail, productId)
+
+    const { user, user: { _id }, product } = validator
+
+    const data = { ...req.body, user: _id }
+
     const review = await createReview(data)
+
+    if (typeof review._id === 'object') {
+      await reviewPopulate(user, product, review)
+    }
+
     res.status(201).json({ message: 'Review created successfully', data: review })
   } catch (error: any) {
     res.status(400).json({ message: 'Error creating review', error: error.message })
@@ -37,8 +50,12 @@ export const updateReviewHandler = async (req: Request, res: Response): Promise<
 
 export const deleteReviewHandler = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { _id } = req.body
-    const review = await deleteReview(_id)
+    const { user, productId, reviewId } = req.body
+
+    await reviewRemove(user, productId, reviewId)
+
+    const review = await deleteReview(reviewId)
+
     res.status(200).json({ message: 'Review deleted successfully', data: review })
   } catch (error: any) {
     res.status(400).json({ message: 'Error deleting review', error: error.message })
