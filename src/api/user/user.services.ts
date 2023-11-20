@@ -11,7 +11,8 @@ export const createUser = async (input: User): Promise<UserDocument> => {
       password: hashedPassword
     }
     const user = await UserModel.create(newUser) as UserDocument
-    return user
+    const { _id, ...userWithoutId } = user.toObject();
+    return userWithoutId;
   } catch (error: any) {
     const message = validatorErrorHandler(error)
     throw new Error(message)
@@ -20,7 +21,8 @@ export const createUser = async (input: User): Promise<UserDocument> => {
 
 export const getAllUsers = async (): Promise<UserDocument[]> => {
   try {
-    const users = await UserModel.find()
+    const users = await UserModel.find().select('-_id').populate('reviews')
+
     if (users === null) {
       throw new Error('Something went wrong when getting all users, please try again later')
     }
@@ -32,7 +34,7 @@ export const getAllUsers = async (): Promise<UserDocument[]> => {
 
 export const getUserByEmail = async (email: string): Promise<UserDocument> => {
   try {
-    const user = await UserModel.findOne({ email }) as UserDocument
+    const user = await UserModel.findOne({ email }).select('-_id').populate('name', 'email') as UserDocument
     if (user === null) {
       throw new Error('User not found')
     }
@@ -45,7 +47,7 @@ export const getUserByEmail = async (email: string): Promise<UserDocument> => {
 export const updateUser = async (data: User): Promise<UserDocument> => {
   try {
     const { email } = data
-    const user = await UserModel.findOneAndUpdate({ email }, data, { new: true }) as UserDocument
+    const user = await UserModel.findOneAndUpdate({ email }, data, { new: true }).select('-_id') as UserDocument
     if (user === null) {
       throw new Error('User not found')
     }
@@ -57,7 +59,7 @@ export const updateUser = async (data: User): Promise<UserDocument> => {
 
 export const deleteUser = async (email: string): Promise<UserDocument> => {
   try {
-    const user = await UserModel.findOneAndDelete({ email }) as UserDocument
+    const user = await UserModel.findOneAndDelete({ email }).select('-_id') as UserDocument
     if (user === null) {
       throw new Error('User not found')
     }
