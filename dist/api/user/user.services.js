@@ -8,6 +8,17 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __rest = (this && this.__rest) || function (s, e) {
+    var t = {};
+    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+        t[p] = s[p];
+    if (s != null && typeof Object.getOwnPropertySymbols === "function")
+        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
+            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
+                t[p[i]] = s[p[i]];
+        }
+    return t;
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -21,7 +32,8 @@ const createUser = (input) => __awaiter(void 0, void 0, void 0, function* () {
         const hashedPassword = yield (0, bcrypt_1.hashPassword)(input.password);
         const newUser = Object.assign(Object.assign({}, input), { password: hashedPassword });
         const user = yield user_model_1.default.create(newUser);
-        return user;
+        const _a = user.toObject(), { _id } = _a, userWithoutId = __rest(_a, ["_id"]);
+        return userWithoutId;
     }
     catch (error) {
         const message = (0, errorHandler_1.validatorErrorHandler)(error);
@@ -31,7 +43,7 @@ const createUser = (input) => __awaiter(void 0, void 0, void 0, function* () {
 exports.createUser = createUser;
 const getAllUsers = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const users = yield user_model_1.default.find();
+        const users = yield user_model_1.default.find().select('-_id').populate('reviews');
         if (users === null) {
             throw new Error('Something went wrong when getting all users, please try again later');
         }
@@ -44,7 +56,7 @@ const getAllUsers = () => __awaiter(void 0, void 0, void 0, function* () {
 exports.getAllUsers = getAllUsers;
 const getUserByEmail = (email) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const user = yield user_model_1.default.findOne({ email });
+        const user = yield user_model_1.default.findOne({ email }).select('-_id').populate('name', 'email');
         if (user === null) {
             throw new Error('User not found');
         }
@@ -58,7 +70,7 @@ exports.getUserByEmail = getUserByEmail;
 const updateUser = (data) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { email } = data;
-        const user = yield user_model_1.default.findOneAndUpdate({ email }, data, { new: true });
+        const user = yield user_model_1.default.findOneAndUpdate({ email }, data, { new: true }).select('-_id');
         if (user === null) {
             throw new Error('User not found');
         }
@@ -71,7 +83,7 @@ const updateUser = (data) => __awaiter(void 0, void 0, void 0, function* () {
 exports.updateUser = updateUser;
 const deleteUser = (email) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const user = yield user_model_1.default.findOneAndDelete({ email });
+        const user = yield user_model_1.default.findOneAndDelete({ email }).select('-_id');
         if (user === null) {
             throw new Error('User not found');
         }

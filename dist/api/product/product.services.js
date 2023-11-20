@@ -29,7 +29,7 @@ const createProduct = (input) => __awaiter(void 0, void 0, void 0, function* () 
 exports.createProduct = createProduct;
 const getallProducts = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const products = yield product_model_1.default.find();
+        const products = yield product_model_1.default.find().populate({ path: 'reviews', populate: { path: 'user', select: 'name email -_id' } });
         if (products === null) {
             throw new Error('Something went wrong when getting all products, please try again later');
         }

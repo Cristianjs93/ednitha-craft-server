@@ -11,6 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteProductHandler = exports.updateProductHandler = exports.getAllProductsHandler = exports.createProductHandler = void 0;
 const product_services_1 = require("./product.services");
+const productUtils_1 = require("../utils/productUtils");
 const createProductHandler = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const data = req.body;
@@ -46,6 +47,7 @@ exports.updateProductHandler = updateProductHandler;
 const deleteProductHandler = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { _id } = req.body;
+        yield (0, productUtils_1.productReviewsRemove)(_id);
         const product = yield (0, product_services_1.deleteProduct)(_id);
         res.status(200).json({ message: 'Product deleted successfully', data: product });
     }
