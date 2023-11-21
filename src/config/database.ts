@@ -1,5 +1,6 @@
 import { config } from 'dotenv';
 import mongoose, { type Connection } from 'mongoose';
+
 config();
 
 let connection: Connection | null = null;

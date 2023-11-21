@@ -1,17 +1,17 @@
 import { type Request } from 'express';
-import { type User } from '../api/user/user.types';
-import { type Product } from '../api/product/product.types';
+import { type UserDocument } from '../api/user/user.types';
+import { type ProductDocument } from '../api/product/product.types';
 
 export interface PayloadType {
-  id: string
+  _id: string
   email: string
   iat?: number
   exp?: number
 }
 
 export interface AuthRequestUser extends Request {
-  user?: User
+  user?: UserDocument
 }
 export interface AuthRequestProduct extends Request {
-  product?: Product
+  product?: ProductDocument
 }

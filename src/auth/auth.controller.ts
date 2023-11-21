@@ -1,34 +1,39 @@
-// import { type Response, type NextFunction } from 'express';
-// import { getUserByEmail } from '../api/user/user.services';
-// import { type AuthRequestUser } from './auth.types';
-// // import { type UserDocument } from '../api/user/user.types';
-// import { verifyToken, getRoleById } from './auth.services';
+import { type Response, type NextFunction } from 'express';
+import { getUserByEmail } from '../api/user/user.services';
+import { type AuthRequestUser } from './auth.types';
+// import { type UserDocument } from '../api/user/user.types';
+import {
+  verifyToken
+  // getRoleById
+} from './auth.services';
 
-// export const isAuthenticated = async (
-//   req: AuthRequestUser,
-//   res: Response,
-//   next: NextFunction
-// ): Promise<any> => {
-//   const token: any = req.headers?.authorization?.split(' ')[1];
+export const isAuthenticated = async (
+  req: AuthRequestUser,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const token = req.headers?.authorization?.split(' ')[1] as string;
 
-//   if (token === null) {
-//     return res
-//       .status(401)
-//       .json({ message: 'Unauthorized! You have to log in first.' });
-//   }
+    if (token === undefined) {
+      throw new Error('Unauthorized! You have to log in first');
+    }
 
-//   const decoded = verifyToken(token);
+    const decoded = verifyToken(token);
 
-//   if (decoded === null) {
-//     return res.status(401).json({ message: 'Token not decoded' });
-//   }
+    if (decoded === null) {
+      throw new Error('Token not decoded');
+    }
 
-//   const user = (await getUserByEmail(decoded.email));
+    const user = await getUserByEmail(decoded.email);
 
-//   req.users = user;
+    req.user = user;
 
-//   next();
-// };
+    next();
+  } catch (error: any) {
+    res.status(400).json({ message: 'Something went wrong, please try again', error: error.message });
+  }
+};
 
 // export function hasRole (rolesAllowed: string[]) {
 //   return async (req: AuthRequest, res: Response, next: NextFunction) => {

@@ -11,17 +11,17 @@ export async function loginHandler (req: Request, res: Response): Promise<void> 
     const user = await UserModel.findOne({ email }) as UserDocument
 
     if (user === null) {
-      res.status(401).json({ message: 'Invalid credentials' });
+      throw new Error('User is not registered');
     }
 
     const isMatch = await comparePassword(password, user.password);
 
     if (!isMatch) {
-      res.status(401).json({ message: 'Invalid credentials' });
+      throw new Error('Incorrect password');
     }
 
     const payload: PayloadType = {
-      id: user._id as unknown as string,
+      _id: user._id as unknown as string,
       email: user.email
     }
 
@@ -36,6 +36,6 @@ export async function loginHandler (req: Request, res: Response): Promise<void> 
 
     res.status(200).json({ token, newUser });
   } catch (error: any) {
-    res.status(400).json({ message: error.message });
+    res.status(400).json({ message: 'Something went wrong when log in, please try again', error: error.message });
   }
 }
