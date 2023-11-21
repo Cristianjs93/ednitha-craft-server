@@ -26,12 +26,3 @@ export const signToken = (payload: PayloadType): string => {
     throw new Error(error.message)
   }
 };
-
-// export async function getRoleById (id: string) {
-//   const role = await prisma.roles.findUnique({
-//     where: {
-//       id
-//     }
-//   });
-//   return role;
-// }

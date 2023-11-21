@@ -1,11 +1,8 @@
 import { type Response, type NextFunction } from 'express';
 import { getUserByEmail } from '../api/user/user.services';
 import { type AuthRequestUser } from './auth.types';
-// import { type UserDocument } from '../api/user/user.types';
-import {
-  verifyToken
-  // getRoleById
-} from './auth.services';
+import { verifyToken } from './auth.services';
+import { type UserDocument } from '../api/user/user.types';
 
 export const isAuthenticated = async (
   req: AuthRequestUser,
@@ -35,16 +32,19 @@ export const isAuthenticated = async (
   }
 };
 
-// export function hasRole (rolesAllowed: string[]) {
-//   return async (req: AuthRequest, res: Response, next: NextFunction) => {
-//     const { roleId } = req.users;
-//     const role = await getRoleById(roleId);
-//     const hasPermission = rolesAllowed.includes(role?.name as string);
+export function hasRole (rolesAllowed: string[]) {
+  return async (req: AuthRequestUser, res: Response, next: NextFunction) => {
+    try {
+      const { role } = req.user as UserDocument
+      const hasPermission = rolesAllowed.includes(role);
 
-//     if (!hasPermission) {
-//       return res.status(403).json({ message: 'Forbidden' });
-//     }
+      if (!hasPermission) {
+        throw new Error('Invalid credentials')
+      }
 
-//     next();
-//   };
-// }
+      next();
+    } catch (error: any) {
+      res.status(400).json({ message: 'Something went wrong, please try again', error: error.message });
+    }
+  };
+}

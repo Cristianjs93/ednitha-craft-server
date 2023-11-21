@@ -1,6 +1,5 @@
 import { type Request } from 'express';
 import { type UserDocument } from '../api/user/user.types';
-import { type ProductDocument } from '../api/product/product.types';
 
 export interface PayloadType {
   _id: string
@@ -11,7 +10,4 @@ export interface PayloadType {
 
 export interface AuthRequestUser extends Request {
   user?: UserDocument
-}
-export interface AuthRequestProduct extends Request {
-  product?: ProductDocument
 }
