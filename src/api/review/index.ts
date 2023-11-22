@@ -9,7 +9,7 @@ import { hasRole, isAuthenticated } from '../../auth/auth.controller'
 
 const router = Router()
 
-router.post('/create', isAuthenticated, createReviewHandler)
+router.post('/create', isAuthenticated, hasRole(['USER', 'ADMIN']), createReviewHandler)
 router.get('/', getAllReviewsHandler)
 router.put('/update', isAuthenticated, hasRole(['USER', 'ADMIN']), updateReviewHandler)
 router.delete('/delete', isAuthenticated, hasRole(['USER', 'ADMIN']), deleteReviewHandler)

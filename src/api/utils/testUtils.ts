@@ -19,7 +19,6 @@ export const userGenerator = async (request: SuperTest<Test>, role: string): Pro
     role
   }
 
-  console.log('USER GENERATOR', user)
   const { body: { data: userResponse } } = await request.post('/api/user/register').send(user)
 
   return userResponse
