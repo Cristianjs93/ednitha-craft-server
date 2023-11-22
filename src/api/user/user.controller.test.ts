@@ -2,6 +2,7 @@ import supertest from 'supertest';
 import app from '../../app'
 import { faker } from '@faker-js/faker';
 import mongoose from 'mongoose';
+import { userGenerator, loginGenerator } from '../utils/testUtils';
 
 const request = supertest(app);
 
@@ -76,7 +77,10 @@ describe('User controller', () => {
   })
   describe('GET /api/user', () => {
     test('Should return status 200 OK', async () => {
-      const response = await request.get('/api/user')
+      const { email } = await userGenerator(request, 'ADMIN')
+      const { token } = await loginGenerator(request, email)
+
+      const response = await request.get('/api/user').set('Authorization', `Bearer ${token}`)
 
       expect(response.status).toBe(200)
       expect(response.body).toHaveProperty('message')
@@ -86,9 +90,11 @@ describe('User controller', () => {
   })
   describe('GET /api/user/email', () => {
     test('Should return error: User not found', async () => {
-      const email = 'example@test.com'
+      const { email } = await userGenerator(request, 'ADMIN')
+      const { token } = await loginGenerator(request, email)
+      const searchEmail = 'example@test.com'
 
-      const response = await request.get('/api/user/email').send({ email })
+      const response = await request.get('/api/user/email').set('Authorization', `Bearer ${token}`).send({ email: searchEmail })
 
       expect(response.status).toBe(400)
       expect(response.body).toHaveProperty('message')
@@ -97,17 +103,10 @@ describe('User controller', () => {
       expect(response.body.error).toEqual('User not found')
     })
     test('Should return status 200 OK', async () => {
-      const user = {
-        email: faker.internet.email({ firstName: faker.person.firstName(), lastName: faker.person.lastName(), provider: 'test.com', allowSpecialCharacters: true }),
-        name: faker.person.firstName(),
-        lastname: faker.person.lastName(),
-        password: 'Mypassword123',
-        role: 'USER'
-      }
-      const { email } = user
+      const { email } = await userGenerator(request, 'ADMIN')
+      const { token } = await loginGenerator(request, email)
 
-      await request.post('/api/user/register').send(user)
-      const response = await request.get('/api/user/email').send({ email })
+      const response = await request.get('/api/user/email').set('Authorization', `Bearer ${token}`).send({ email })
 
       expect(response.status).toBe(200)
       expect(response.body).toHaveProperty('message')
@@ -118,22 +117,15 @@ describe('User controller', () => {
   })
   describe('PUT /api/user/update', () => {
     test('Should return status 200', async () => {
-      const user = {
-        email: faker.internet.email({ firstName: faker.person.firstName(), lastName: faker.person.lastName(), provider: 'test.com', allowSpecialCharacters: true }),
-        name: faker.person.firstName(),
-        lastname: faker.person.lastName(),
-        password: 'Mypassword123',
-        role: 'USER'
-      }
+      const { email } = await userGenerator(request, 'USER')
+      const { token } = await loginGenerator(request, email)
       const updatedUser = {
-        email: user.email,
+        email,
         name: 'John',
         lastname: 'Doe'
-
       }
 
-      await request.post('/api/user/register').send(user)
-      const response = await request.put('/api/user/update').send(updatedUser)
+      const response = await request.put('/api/user/update').set('Authorization', `Bearer ${token}`).send(updatedUser)
 
       expect(response.status).toBe(200)
       expect(response.body).toHaveProperty('message')
@@ -144,17 +136,10 @@ describe('User controller', () => {
   })
   describe('DELETE /api/user/delete', () => {
     test('Should return status 200', async () => {
-      const user = {
-        email: faker.internet.email({ firstName: faker.person.firstName(), lastName: faker.person.lastName(), provider: 'test.com', allowSpecialCharacters: true }),
-        name: faker.person.firstName(),
-        lastname: faker.person.lastName(),
-        password: 'Mypassword123',
-        role: 'USER'
-      }
-      const { email } = user
+      const { email } = await userGenerator(request, 'USER')
+      const { token } = await loginGenerator(request, email)
 
-      await request.post('/api/user/register').send(user)
-      const response = await request.delete('/api/user/delete').send({ email })
+      const response = await request.delete('/api/user/delete').set('Authorization', `Bearer ${token}`).send({ email })
 
       expect(response.status).toBe(200)
       expect(response.body).toHaveProperty('message')
