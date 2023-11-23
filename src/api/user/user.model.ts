@@ -1,6 +1,6 @@
 import { Schema, model, models } from 'mongoose';
 import { type User } from './user.types';
-import { nameRegex, emailRegex, passwordRegex } from '../utils/regex';
+import { nameRegex, emailRegex, passwordRegex } from '../../assets/data/regex';
 
 export const userSchema = new Schema(
   {
@@ -41,7 +41,7 @@ export const userSchema = new Schema(
     },
     avatar: {
       type: String,
-      required: false
+      required: [true, 'Avatar is required']
     },
     role: {
       type: String,

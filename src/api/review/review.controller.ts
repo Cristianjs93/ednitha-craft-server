@@ -50,9 +50,9 @@ export const updateReviewHandler = async (req: Request, res: Response): Promise<
 
 export const deleteReviewHandler = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { user, productId, reviewId } = req.body
+    const { user, product, reviewId } = req.body
 
-    await reviewRemove(user, productId, reviewId)
+    await reviewRemove(user, product, reviewId)
 
     const review = await deleteReview(reviewId)
 

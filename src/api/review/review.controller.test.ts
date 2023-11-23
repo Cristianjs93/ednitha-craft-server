@@ -2,7 +2,7 @@ import supertest from 'supertest'
 import app from '../../app'
 import { faker } from '@faker-js/faker'
 import mongoose from 'mongoose'
-import { userAndProductGenerator } from '../utils/testUtils'
+import { userAndProductGenerator } from '../../utils/testUtils'
 
 const request = supertest(app)
 

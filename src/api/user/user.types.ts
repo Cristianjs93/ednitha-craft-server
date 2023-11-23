@@ -4,7 +4,7 @@ export interface User {
   lastname: string
   email: string
   password: string
-  avatar?: string
+  avatar: string
   role: string
   active: boolean
   reviews?: Types.ObjectId[]
@@ -15,7 +15,7 @@ export interface UserDocument extends Document {
   lastname: string
   email: string
   password: string
-  avatar?: string
+  avatar: string
   role: string
   active: boolean
   reviews?: Types.ObjectId[]

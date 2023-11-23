@@ -2,7 +2,12 @@ import supertest from 'supertest';
 import app from '../../app'
 import { faker } from '@faker-js/faker';
 import mongoose from 'mongoose';
-import { loginGenerator, userGenerator } from '../utils/testUtils';
+import {
+  readBuffer,
+  loginGenerator,
+  userGenerator,
+  userAndProductGenerator
+} from '../../utils/testUtils';
 
 const request = supertest(app);
 
@@ -15,14 +20,18 @@ describe('Product controller', () => {
     test('Should return error: Product name is required. Product description is required', async () => {
       const { email } = await userGenerator(request, 'ADMIN')
       const { token } = await loginGenerator(request, email)
-      const product = {
-        image: 'https://picsum.photos/100/100',
+      const { image, ...product } = {
+        image: readBuffer('../assets/images/fake-product.jpg'),
         name: '',
         description: '',
         price: faker.commerce.price({ min: 10, max: 500, dec: 0 })
       }
 
-      const response = await request.post('/api/product/create').set('Authorization', `Bearer ${token}`).send(product)
+      const response = await request.post('/api/product/create')
+        .set('Authorization', `Bearer ${token}`)
+        .set('Content-Type', 'multipart/form-data')
+        .attach('image', image)
+        .field({ ...product })
 
       expect(response.status).toBe(400)
       expect(response.body).toHaveProperty('message')
@@ -33,14 +42,18 @@ describe('Product controller', () => {
     test('Should return error: Product name must be at least 4 characters long', async () => {
       const { email } = await userGenerator(request, 'ADMIN')
       const { token } = await loginGenerator(request, email)
-      const product = {
-        image: 'https://picsum.photos/100/100',
+      const { image, ...product } = {
+        image: readBuffer('../assets/images/fake-product.jpg'),
         name: 'abc',
         description: faker.commerce.productDescription(),
         price: faker.commerce.price({ min: 10, max: 500, dec: 0 })
       }
 
-      const response = await request.post('/api/product/create').set('Authorization', `Bearer ${token}`).send(product)
+      const response = await request.post('/api/product/create')
+        .set('Authorization', `Bearer ${token}`)
+        .set('Content-Type', 'multipart/form-data')
+        .attach('image', image)
+        .field({ ...product })
 
       expect(response.status).toBe(400)
       expect(response.body).toHaveProperty('error')
@@ -49,14 +62,18 @@ describe('Product controller', () => {
     test('Should return status 201 Created', async () => {
       const { email } = await userGenerator(request, 'ADMIN')
       const { token } = await loginGenerator(request, email)
-      const product = {
-        image: 'https://picsum.photos/100/100',
+      const { image, ...product } = {
+        image: readBuffer('../assets/images/fake-product.jpg'),
         name: faker.commerce.productName(),
         description: faker.commerce.productDescription(),
         price: faker.commerce.price({ min: 10, max: 500, dec: 0 })
       }
 
-      const response = await request.post('/api/product/create').set('Authorization', `Bearer ${token}`).send(product)
+      const response = await request.post('/api/product/create')
+        .set('Authorization', `Bearer ${token}`)
+        .set('Content-Type', 'multipart/form-data')
+        .attach('image', image)
+        .field({ ...product })
 
       expect(response.status).toBe(201)
       expect(response.body).toHaveProperty('message')
@@ -77,55 +94,40 @@ describe('Product controller', () => {
   })
   describe('PUT /api/product/update', () => {
     test('Should return status 200', async () => {
-      const { email } = await userGenerator(request, 'ADMIN')
-      const { token } = await loginGenerator(request, email)
-      const product = {
-        image: 'https://picsum.photos/100/100',
-        name: faker.commerce.productName(),
-        description: faker.commerce.productDescription(),
-        price: faker.commerce.price({ min: 10, max: 500, dec: 0 })
+      const { product, productImage, token } = await userAndProductGenerator(request, 'ADMIN')
+      const { image, ...updatedProduct } = {
+        _id: product as unknown as string,
+        price: faker.commerce.price({ min: 10, max: 500, dec: 0 }),
+        image: readBuffer('../assets/images/fake-product2.jpg')
       }
 
-      const { body: { data: productCreateResponse } } = await request.post('/api/product/create').set('Authorization', `Bearer ${token}`).send(product)
-
-      const updatedProduct = {
-        _id: productCreateResponse._id,
-        price: faker.commerce.price({ min: 10, max: 500, dec: 0 })
-      }
-
-      const response = await request.put('/api/product/update').set('Authorization', `Bearer ${token}`).send(updatedProduct)
+      const response = await request.put('/api/product/update')
+        .set('Authorization', `Bearer ${token}`)
+        .set('Content-Type', 'multipart/form-data')
+        .attach('image', image)
+        .field({ ...updatedProduct })
 
       expect(response.status).toBe(200)
       expect(response.body).toHaveProperty('message')
       expect(response.body.message).toEqual('Product updated successfully')
       expect(response.body).toHaveProperty('data')
       expect(response.body.data.price).toEqual(parseInt(updatedProduct.price))
+      expect(response.body.data.image).not.toEqual(productImage)
     })
   })
   describe('DELETE /api/product/delete', () => {
     test('Should return status 200', async () => {
-      const { email } = await userGenerator(request, 'ADMIN')
-      const { token } = await loginGenerator(request, email)
+      const { product: _id, token } = await userAndProductGenerator(request, 'ADMIN')
 
-      const product = {
-        image: 'https://picsum.photos/100/100',
-        name: faker.commerce.productName(),
-        description: faker.commerce.productDescription(),
-        price: faker.commerce.price({ min: 10, max: 500, dec: 0 })
-      }
-
-      const { body: { data: productCreateResponse } } = await request.post('/api/product/create').set('Authorization', `Bearer ${token}`).send(product)
-
-      const { _id } = productCreateResponse
-
-      const response = await request.delete('/api/product/delete').set('Authorization', `Bearer ${token}`).send({ _id })
+      const response = await request.delete('/api/product/delete')
+        .set('Authorization', `Bearer ${token}`)
+        .send({ _id })
 
       expect(response.status).toBe(200)
       expect(response.body).toHaveProperty('message')
       expect(response.body.message).toEqual('Product deleted successfully')
       expect(response.body).toHaveProperty('data')
-      expect(response.body.data.name).toEqual(product.name)
-      expect(response.body.data.description).toEqual(product.description)
+      expect(response.body.data._id).toEqual(_id)
     })
   })
 })

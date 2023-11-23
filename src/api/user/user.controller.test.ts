@@ -2,7 +2,11 @@ import supertest from 'supertest';
 import app from '../../app'
 import { faker } from '@faker-js/faker';
 import mongoose from 'mongoose';
-import { userGenerator, loginGenerator } from '../utils/testUtils';
+import {
+  userGenerator,
+  loginGenerator,
+  readBuffer
+} from '../../utils/testUtils';
 
 const request = supertest(app);
 
@@ -13,61 +17,80 @@ afterAll(async () => {
 describe('User controller', () => {
   describe('POST /api/user', () => {
     test('Should return error: Name must be at least 3 characters long', async () => {
-      const user = {
+      const { avatar, ...user } = {
         email: faker.internet.email({ firstName: faker.person.firstName(), lastName: faker.person.lastName(), provider: 'test.com', allowSpecialCharacters: true }),
         name: 'ab',
         lastname: faker.person.lastName(),
         password: 'Mypassword123',
+        avatar: readBuffer('../assets/images/fake-profile.jpg'),
         role: 'USER'
       }
 
-      const response = await request.post('/api/user/register').send(user)
+      const response = await request.post('/api/user/register')
+        .set('Content-Type', 'multipart/form-data')
+        .attach('avatar', avatar)
+        .field({ ...user })
 
       expect(response.status).toBe(400)
       expect(response.body).toHaveProperty('error')
       expect(response.body.error).toEqual('Name must be at least 3 characters long')
     })
     test('Should return error: Lastname is not valid. Email is not valid', async () => {
-      const user = {
+      const { avatar, ...user } = {
         email: 'abc1@test.com',
         name: faker.person.firstName(),
         lastname: 'ab@',
         password: 'Mypassword123',
+        avatar: readBuffer('../assets/images/fake-profile.jpg'),
         role: 'USER'
       }
 
-      const response = await request.post('/api/user/register').send(user)
+      const response = await request.post('/api/user/register')
+        .set('Content-Type', 'multipart/form-data')
+        .attach('avatar', avatar)
+        .field({ ...user })
 
       expect(response.status).toBe(400)
       expect(response.body).toHaveProperty('error')
       expect(response.body.error).toEqual('Lastname is not valid. Email is not valid')
     })
     test('Should return error: Email already exists', async () => {
-      const user = {
-        email: faker.internet.email({ firstName: faker.person.firstName(), lastName: faker.person.lastName(), provider: 'test.com', allowSpecialCharacters: true }),
-        name: faker.person.firstName(),
-        lastname: faker.person.lastName(),
-        password: 'Mypassword123',
-        role: 'USER'
-      }
-      const anotherUser = { ...user }
+      const { email, name, lastname, role } = await userGenerator(request, 'USER')
 
-      await request.post('/api/user/register').send(user)
-      const response = await request.post('/api/user/register').send(anotherUser)
+      const response = await request.post('/api/user/register')
+        .set('Content-Type', 'multipart/form-data')
+        .attach('avatar', readBuffer('../assets/images/fake-profile.jpg'))
+        .field({
+          email,
+          name,
+          password: 'Mypassword123',
+          lastname,
+          role
+        })
 
       expect(response.status).toBe(400)
       expect(response.body).toHaveProperty('error')
       expect(response.body.error).toEqual('Email already exists')
     })
     test('Should return status 201 Created', async () => {
-      const user = {
-        email: faker.internet.email({ firstName: faker.person.firstName(), lastName: faker.person.lastName(), provider: 'test.com', allowSpecialCharacters: true }),
+      const { avatar, ...user } = {
+        email: faker.internet.email({
+          firstName: faker.person.firstName(),
+          lastName: faker.person.lastName(),
+          provider: 'test.com',
+          allowSpecialCharacters: true
+        }),
         name: faker.person.firstName(),
         lastname: faker.person.lastName(),
         password: 'Mypassword123',
+        avatar: readBuffer('../assets/images/fake-profile.jpg'),
         role: 'USER'
       }
-      const response = await request.post('/api/user/register').send(user)
+
+      const response = await request.post('/api/user/register')
+        .set('Content-Type', 'multipart/form-data')
+        .attach('avatar', avatar)
+        .field({ ...user })
 
       expect(response.status).toBe(201)
       expect(response.body).toHaveProperty('message')
@@ -121,11 +144,16 @@ describe('User controller', () => {
       const { token } = await loginGenerator(request, email)
       const updatedUser = {
         email,
-        name: 'John',
-        lastname: 'Doe'
+        name: faker.person.firstName(),
+        lastname: faker.person.lastName(),
+        avatar: readBuffer('../assets/images/fake-profile2.jpg')
       }
 
-      const response = await request.put('/api/user/update').set('Authorization', `Bearer ${token}`).send(updatedUser)
+      const response = await request.put('/api/user/update')
+        .set('Authorization', `Bearer ${token}`)
+        .set('Content-Type', 'multipart/form-data')
+        .attach('avatar', updatedUser.avatar)
+        .field({ ...updatedUser })
 
       expect(response.status).toBe(200)
       expect(response.body).toHaveProperty('message')
