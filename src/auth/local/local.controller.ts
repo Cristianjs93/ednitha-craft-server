@@ -8,7 +8,7 @@ import { type UserDocument } from '../../api/user/user.types';
 export async function loginHandler (req: Request, res: Response): Promise<void> {
   try {
     const { email, password } = req.body;
-    const user = await UserModel.findOne({ email }) as UserDocument
+    const user = await UserModel.findOne({ email }) as UserDocument;
 
     if (user === null) {
       throw new Error('User is not registered');
@@ -23,7 +23,7 @@ export async function loginHandler (req: Request, res: Response): Promise<void> 
     const payload: PayloadType = {
       _id: user._id as unknown as string,
       email: user.email
-    }
+    };
 
     const token = signToken(payload);
 

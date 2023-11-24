@@ -35,11 +35,11 @@ export const isAuthenticated = async (
 export function hasRole (rolesAllowed: string[]) {
   return async (req: AuthRequestUser, res: Response, next: NextFunction) => {
     try {
-      const { role } = req.user as UserDocument
+      const { role } = req.user as UserDocument;
       const hasPermission = rolesAllowed.includes(role);
 
       if (!hasPermission) {
-        throw new Error('Invalid credentials')
+        throw new Error('Invalid credentials');
       }
 
       next();

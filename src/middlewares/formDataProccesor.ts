@@ -1,13 +1,13 @@
 import busboy from 'busboy';
 import cloudinary from '../config/cloudinary';
-import { config } from 'dotenv'
+import { config } from 'dotenv';
 import { type Request, type Response, type NextFunction } from 'express';
 import {
   type UploadApiResponse,
   type UploadApiErrorResponse
 } from 'cloudinary';
 
-config()
+config();
 
 export const formDataProccesor = (req: Request, res: Response, next: NextFunction): void => {
   let uploadingFile = false;

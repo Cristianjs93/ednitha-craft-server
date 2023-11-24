@@ -11,7 +11,7 @@ export const verifyToken = (token: string): PayloadType => {
     const decoded = jwt.verify(token, SECRET) as PayloadType;
     return decoded;
   } catch (error: any) {
-    throw new Error(error.message)
+    throw new Error(error.message);
   }
 };
 
@@ -23,6 +23,6 @@ export const signToken = (payload: PayloadType): string => {
 
     return token;
   } catch (error: any) {
-    throw new Error(error.message)
+    throw new Error(error.message);
   }
 };

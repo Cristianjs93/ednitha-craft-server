@@ -5,7 +5,7 @@ import connect from './config/database';
 
 const app = express();
 
-void connect()
+void connect();
 
 const port = process.env.PORT ?? 8080;
 
@@ -18,4 +18,4 @@ if (process.env.NODE_ENV !== 'test') {
   });
 }
 
-export default app
+export default app;

@@ -1,51 +1,51 @@
-import ProductModel from './product.model'
-import { type Product, type ProductDocument } from './product.types'
-import { validatorErrorHandler } from '../utils/errorHandler'
+import ProductModel from './product.model';
+import { type Product, type ProductDocument } from './product.types';
+import { validatorErrorHandler } from '../utils/errorHandler';
 
 export const createProduct = async (input: Product): Promise<ProductDocument> => {
   try {
-    const newProduct = { ...input }
-    const product = await ProductModel.create(newProduct) as ProductDocument
-    return product
+    const newProduct = { ...input };
+    const product = await ProductModel.create(newProduct) as ProductDocument;
+    return product;
   } catch (error: any) {
-    const message = validatorErrorHandler(error)
-    throw new Error(message)
+    const message = validatorErrorHandler(error);
+    throw new Error(message);
   }
-}
+};
 
 export const getallProducts = async (): Promise<ProductDocument[]> => {
   try {
-    const products = await ProductModel.find().populate({ path: 'reviews', populate: { path: 'user', select: 'name email -_id' } })
+    const products = await ProductModel.find().populate({ path: 'reviews', populate: { path: 'user', select: 'name email -_id' } });
     if (products === null) {
-      throw new Error('Something went wrong when getting all products, please try again later')
+      throw new Error('Something went wrong when getting all products, please try again later');
     }
-    return products as ProductDocument[]
+    return products as ProductDocument[];
   } catch (error: any) {
-    throw new Error(error.message)
+    throw new Error(error.message);
   }
-}
+};
 
 export const updateProduct = async (data: Product): Promise<ProductDocument> => {
   try {
-    const { _id } = data
-    const product = await ProductModel.findOneAndUpdate({ _id }, data, { new: true }) as ProductDocument
+    const { _id } = data;
+    const product = await ProductModel.findOneAndUpdate({ _id }, data, { new: true }) as ProductDocument;
     if (product === null) {
-      throw new Error('Product not found')
+      throw new Error('Product not found');
     }
-    return product
+    return product;
   } catch (error: any) {
-    throw new Error(error.message)
+    throw new Error(error.message);
   }
-}
+};
 
 export const deleteProduct = async (_id: string): Promise<ProductDocument> => {
   try {
-    const product = await ProductModel.findOneAndDelete({ _id }) as ProductDocument
+    const product = await ProductModel.findOneAndDelete({ _id }) as ProductDocument;
     if (product === null) {
-      throw new Error('Product not found')
+      throw new Error('Product not found');
     }
-    return product
+    return product;
   } catch (error: any) {
-    throw new Error(error.message)
+    throw new Error(error.message);
   }
-}
+};

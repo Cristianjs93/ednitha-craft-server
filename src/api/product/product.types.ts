@@ -1,4 +1,4 @@
-import { type Types, type Document } from 'mongoose'
+import { type Types, type Document } from 'mongoose';
 
 export interface Product {
   _id?: Types.ObjectId
@@ -6,6 +6,7 @@ export interface Product {
   name: string
   description: string
   price: number
+  category: string
   rating: number
   reviews: Types.ObjectId[]
 }
@@ -16,5 +17,7 @@ export interface ProductDocument extends Document {
   description: string
   price: number
   rating: number
+  category: string
   reviews: Types.ObjectId[]
+  createdAt: string | number | Date
 }

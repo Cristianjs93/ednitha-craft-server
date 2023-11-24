@@ -25,10 +25,10 @@ export const userSchema = new Schema(
       validate: [{
         validator: async (value: string) => {
           try {
-            const user = await models.user.findOne({ email: value }) as User ?? null
-            return user === null
+            const user = await models.user.findOne({ email: value }) as User ?? null;
+            return user === null;
           } catch (error) {
-            return false
+            return false;
           }
         },
         message: 'Email already exists'
@@ -62,8 +62,8 @@ export const userSchema = new Schema(
     timestamps: true,
     versionKey: false
   }
-)
+);
 
-const UserModel = model('user', userSchema)
+const UserModel = model('user', userSchema);
 
-export default UserModel
+export default UserModel;

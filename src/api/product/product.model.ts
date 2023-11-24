@@ -20,6 +20,10 @@ export const ProductSchema = new Schema(
       type: Number,
       required: [true, 'Product price is required']
     },
+    category: {
+      type: String,
+      required: [true, 'Product category is required']
+    },
     reviews: {
       type: [{ type: Schema.Types.ObjectId, ref: 'review' }],
       required: false
@@ -33,27 +37,27 @@ export const ProductSchema = new Schema(
     timestamps: true,
     versionKey: false
   }
-)
+);
 
 ProductSchema.pre('save', async function (next) {
-  const product = this
+  const product = this;
 
   if (this.reviews !== undefined && this.reviews !== null) {
     const totalRating = await this.populate('reviews').then(() => {
       return this.reviews?.reduce((acc: number, review: any) => {
-        return acc + review.rating
-      }, 0)
-    })
+        return acc + review.rating;
+      }, 0);
+    });
 
     if (totalRating !== undefined) {
-      const averageRating = totalRating / this.reviews?.length
-      product.rating = averageRating
+      const averageRating = totalRating / this.reviews?.length;
+      product.rating = averageRating;
 
-      next()
+      next();
     }
   }
-})
+});
 
-const ProductModel = model('product', ProductSchema)
+const ProductModel = model('product', ProductSchema);
 
-export default ProductModel
+export default ProductModel;
