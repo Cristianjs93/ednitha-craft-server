@@ -29,6 +29,9 @@ export const updateProduct = async (data: Product): Promise<ProductDocument> => 
   try {
     const { _id } = data
     const product = await ProductModel.findOneAndUpdate({ _id }, data, { new: true }) as ProductDocument
+    if (product === null) {
+      throw new Error('Product not found')
+    }
     return product
   } catch (error: any) {
     throw new Error(error.message)

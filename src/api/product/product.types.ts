@@ -6,7 +6,8 @@ export interface Product {
   name: string
   description: string
   price: number
-  reviews?: Types.ObjectId[]
+  rating: number
+  reviews: Types.ObjectId[]
 }
 
 export interface ProductDocument extends Document {
@@ -14,5 +15,6 @@ export interface ProductDocument extends Document {
   name: string
   description: string
   price: number
-  reviews?: Types.ObjectId[]
+  rating: number
+  reviews: Types.ObjectId[]
 }
