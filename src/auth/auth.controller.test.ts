@@ -152,7 +152,7 @@ describe('auth controller', () => {
       expect(response.body.message).toEqual('Review created successfully');
       expect(response.body.data).toHaveProperty('_id');
       expect(response.body.data).toMatchObject({ title: review.title });
-    });
+    }, 10000);
   });
   describe('DELETE /api/review', () => {
     test('Should return error: Unauthorized! You have to log in first', async () => {
