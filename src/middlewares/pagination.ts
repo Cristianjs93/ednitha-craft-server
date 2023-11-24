@@ -1,51 +1,30 @@
 import { type Request, type NextFunction } from 'express';
-import { type ResponsePaginator, type PaginationQueryParams } from '../utils/pagination.types';
-import { filteredData, filteredByObject } from '../utils/filters';
+import {
+  type ResponsePaginator
+  //  type PaginationQueryParams
+} from '../utils/middlewares.types';
 import { paginationGenerator } from '../utils/paginationGenerator';
-import { getallProducts } from '../api/product/product.services';
+import { type ProductDocument } from '../api/product/product.types';
 
 export const pagination = () => {
   return async (req: Request, res: ResponsePaginator, next: NextFunction) => {
-    const { page, limit, filter, price, rating, category } =
-      req.query as unknown as PaginationQueryParams;
+    try {
+      const { page, limit } = req.query;
+      const { filteredResults } = res;
 
-    const pageData = parseInt(page);
-
-    const limitData = parseInt(limit);
-
-    const allProducts = await getallProducts();
-
-    const filteredProducts = filteredData(allProducts, filter);
-
-    if ((price.length > 0) || (rating.length > 0) || (category.length > 0)) {
-      const filteredProductsByObject = filteredByObject(
-        filteredProducts,
-        price,
-        rating,
-        category
-      );
+      const pageData = parseInt(page as string);
+      const limitData = parseInt(limit as string);
 
       const results = paginationGenerator(
-        filteredProductsByObject,
+        filteredResults as ProductDocument[],
         pageData,
-        limitData,
-        allProducts
+        limitData
       );
 
       res.paginatedResults = results;
       next();
-    } else {
-      if (filteredProducts !== undefined) {
-        const results = paginationGenerator(
-          filteredProducts,
-          pageData,
-          limitData,
-          allProducts
-        );
-
-        res.paginatedResults = results;
-        next();
-      }
+    } catch (error: any) {
+      throw new Error(error.message);
     }
   };
 };

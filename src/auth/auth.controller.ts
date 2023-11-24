@@ -28,7 +28,8 @@ export const isAuthenticated = async (
 
     next();
   } catch (error: any) {
-    res.status(400).json({ message: 'Something went wrong, please try again', error: error.message });
+    // res.status(400).json({ message: 'Something went wrong, please try again', error: error.message });
+    throw new Error(error.message);
   }
 };
 
@@ -44,7 +45,8 @@ export function hasRole (rolesAllowed: string[]) {
 
       next();
     } catch (error: any) {
-      res.status(400).json({ message: 'Something went wrong, please try again', error: error.message });
+      // res.status(400).json({ message: 'Something went wrong, please try again', error: error.message });
+      throw new Error(error.message);
     }
   };
 }

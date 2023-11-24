@@ -1,8 +1,15 @@
 import { type Response } from 'express';
+import { type ProductDocument } from '../api/product/product.types';
+
+export interface ResponseFiltering extends Response {
+  filteredResults?: ProductDocument[]
+}
 
 export interface ResponsePaginator extends Response {
   paginatedResults?: object
+  filteredResults?: ProductDocument[]
 }
+
 export interface PaginationQueryParams {
   page: string
   limit: string
@@ -15,7 +22,6 @@ export interface PaginationQueryParams {
 export interface PaginationResult {
   next: object
   previous: object
-  data: object[]
+  result: object[]
   length: number
-  allProducts: object[]
 }

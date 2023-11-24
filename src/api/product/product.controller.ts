@@ -1,11 +1,12 @@
 import { type Request, type Response } from 'express';
 import {
   createProduct,
-  getallProducts,
+  // getallProducts,
   updateProduct,
   deleteProduct
 } from './product.services';
 import { productReviewsRemove } from '../utils/productUtils';
+import { type ResponsePaginator } from '../../utils/middlewares.types';
 
 export const createProductHandler = async (req: Request, res: Response): Promise<void> => {
   try {
@@ -17,10 +18,11 @@ export const createProductHandler = async (req: Request, res: Response): Promise
   }
 };
 
-export const getAllProductsHandler = async (req: Request, res: Response): Promise<void> => {
+export const getAllProductsHandler = async (req: Request, res: ResponsePaginator): Promise<void> => {
   try {
-    const products = await getallProducts();
-    res.status(200).json({ message: 'Products listed', data: products });
+    const { paginatedResults } = res;
+    // const products = await getallProducts();
+    res.status(200).json({ message: 'Products listed', data: paginatedResults });
   } catch (error: any) {
     res.status(400).json({ message: 'Error listing products', error: error.message });
   }

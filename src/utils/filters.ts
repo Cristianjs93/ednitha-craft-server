@@ -1,26 +1,29 @@
 import { type ProductDocument } from '../api/product/product.types';
-// import { type RestaurantsFiltered } from '../api/restaurants/restaurants.types';
 
 export const filteredData = (data: ProductDocument[], filter: string): ProductDocument[] => {
-  if (filter === 'all') {
+  try {
+    if (filter === 'all') {
+      return data;
+    } else if (filter === 'popular') {
+      const popularProducts = data.filter(
+        (product) => product.rating >= 4
+      );
+      return popularProducts;
+    } else if (filter === 'latest') {
+      const currentTime: Date = new Date();
+      const oneWeekAgo = new Date(
+        currentTime.getTime() - 1000 * 60 * 60 * 24 * 7
+      );
+      const recentProducts = data.filter((product) => {
+        const createdAtTime = new Date(product.createdAt);
+        return createdAtTime > oneWeekAgo;
+      });
+      return recentProducts;
+    }
     return data;
-  } else if (filter === 'popular') {
-    const popularProducts = data.filter(
-      (product) => product.rating >= 4
-    );
-    return popularProducts;
-  } else if (filter === 'latest') {
-    const currentTime: Date = new Date();
-    const oneWeekAgo = new Date(
-      currentTime.getTime() - 1000 * 60 * 60 * 24 * 7
-    );
-    const recentProducts = data.filter((product) => {
-      const createdAtTime = new Date(product.createdAt);
-      return createdAtTime > oneWeekAgo;
-    });
-    return recentProducts;
+  } catch (error: any) {
+    throw new Error(error.message);
   }
-  return data;
 };
 
 export const filteredByObject = (

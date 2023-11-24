@@ -10,56 +10,60 @@ import {
 config();
 
 export const formDataProccesor = (req: Request, res: Response, next: NextFunction): void => {
-  let uploadingFile = false;
-  let countFiles = 0;
+  try {
+    let uploadingFile = false;
+    let countFiles = 0;
 
-  const bb = busboy({ headers: req.headers });
-  req.body = {};
+    const bb = busboy({ headers: req.headers });
+    req.body = {};
 
-  const done = (): void => {
-    if (uploadingFile) return;
-    if (countFiles > 0) return;
-    next();
-  };
+    const done = (): void => {
+      if (uploadingFile) return;
+      if (countFiles > 0) return;
+      next();
+    };
 
-  bb.on('field', (key: string, val: string) => {
-    req.body[key] = val;
-  });
-  ;
-  bb.on('file', (key: string, stream: NodeJS.ReadableStream) => {
-    uploadingFile = true;
-    countFiles++;
+    bb.on('field', (key: string, val: string) => {
+      req.body[key] = val;
+    });
+    ;
+    bb.on('file', (key: string, stream: NodeJS.ReadableStream) => {
+      uploadingFile = true;
+      countFiles++;
 
-    const cloud = cloudinary.uploader.upload_stream(
-      { upload_preset: process.env.CLOUDINARY_PRESET },
-      (error: UploadApiErrorResponse | undefined, res: UploadApiResponse | undefined): void => {
-        if (error !== undefined) {
-          throw new Error('something went wrong uploading to Cloudinary');
+      const cloud = cloudinary.uploader.upload_stream(
+        { upload_preset: process.env.CLOUDINARY_PRESET },
+        (error: UploadApiErrorResponse | undefined, res: UploadApiResponse | undefined): void => {
+          if (error !== undefined) {
+            throw new Error('something went wrong uploading to Cloudinary');
+          }
+
+          if (res !== undefined) {
+            req.body[key] = res.secure_url;
+          }
+
+          uploadingFile = false;
+          countFiles--;
+
+          done();
         }
+      );
 
-        if (res !== undefined) {
-          req.body[key] = res.secure_url;
-        }
+      stream.on('data', (data) => {
+        cloud.write(data);
+      });
 
-        uploadingFile = false;
-        countFiles--;
-
-        done();
-      }
-    );
-
-    stream.on('data', (data) => {
-      cloud.write(data);
+      stream.on('end', () => {
+        cloud.end();
+      });
     });
 
-    stream.on('end', () => {
-      cloud.end();
+    bb.on('finish', () => {
+      done();
     });
-  });
 
-  bb.on('finish', () => {
-    done();
-  });
-
-  req.pipe(bb);
+    req.pipe(bb);
+  } catch (error: any) {
+    throw new Error(error.message);
+  }
 };

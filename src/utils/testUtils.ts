@@ -51,7 +51,8 @@ export const userAndProductGenerator = async (request: SuperTest<Test>, role: st
       image: readBuffer('../assets/images/fake-product.jpg'),
       name: faker.commerce.productName(),
       description: faker.commerce.productDescription(),
-      price: faker.commerce.price({ min: 10, max: 500, dec: 0 })
+      price: faker.commerce.price({ min: 10, max: 500, dec: 0 }),
+      category: 'doll'
     };
 
     const { body: { data: productResponse } } = await request.post('/api/product/create')
