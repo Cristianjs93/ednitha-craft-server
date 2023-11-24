@@ -2,7 +2,7 @@ import supertest from 'supertest'
 import app from '../../app'
 import { faker } from '@faker-js/faker'
 import mongoose from 'mongoose'
-import { userAndProductGenerator } from '../../utils/testUtils'
+import { userAndProductGenerator, reviewGenerator } from '../../utils/testUtils'
 
 const request = supertest(app)
 
@@ -82,25 +82,17 @@ describe('Review controller', () => {
   })
   describe('PUT /api/review/update', () => {
     test('Should return status 200', async () => {
-      const { user, product, token } = await userAndProductGenerator(request, 'USER')
-
-      const review = {
-        rating: faker.number.int({ min: 1, max: 5 }),
-        title: faker.commerce.productAdjective(),
-        comments: faker.commerce.productDescription(),
-        user,
-        product
-      }
-
-      const { body: { data: reviewResponse } } = await request.post('/api/review/create').set('Authorization', `Bearer ${token}`).send(review)
+      const { review, token } = await reviewGenerator(request)
 
       const updatedReview = {
-        _id: reviewResponse._id,
+        _id: review._id,
         rating: faker.number.int({ min: 1, max: 5 }),
         comments: faker.commerce.productDescription()
       }
 
-      const response = await request.put('/api/review/update').set('Authorization', `Bearer ${token}`).send(updatedReview)
+      const response = await request.put('/api/review/update')
+        .set('Authorization', `Bearer ${token}`)
+        .send(updatedReview)
 
       expect(response.status).toBe(200)
       expect(response.body).toHaveProperty('message')
@@ -112,25 +104,17 @@ describe('Review controller', () => {
   })
   describe('DELETE /api/review/delete', () => {
     test('Should return status 200', async () => {
-      const { user, product, token } = await userAndProductGenerator(request, 'USER')
-
-      const review = {
-        rating: faker.number.int({ min: 1, max: 5 }),
-        title: faker.commerce.productAdjective(),
-        comments: faker.commerce.productDescription(),
-        user,
-        product
-      }
-
-      const { body: { data: reviewResponse } } = await request.post('/api/review/create').set('Authorization', `Bearer ${token}`).send(review)
+      const { review, user, token } = await reviewGenerator(request)
 
       const reviewDelete = {
-        reviewId: reviewResponse._id,
+        reviewId: review._id,
         user,
-        productId: product
+        product: review.product
       }
 
-      const response = await request.delete('/api/review/delete').set('Authorization', `Bearer ${token}`).send(reviewDelete)
+      const response = await request.delete('/api/review/delete')
+        .set('Authorization', `Bearer ${token}`)
+        .send(reviewDelete)
 
       expect(response.status).toBe(200)
       expect(response.body).toHaveProperty('message')
@@ -138,6 +122,6 @@ describe('Review controller', () => {
       expect(response.body).toHaveProperty('data')
       expect(response.body.data.title).toEqual(review.title)
       expect(response.body.data.comments).toEqual(review.comments)
-    })
+    }, 10000)
   })
 })
