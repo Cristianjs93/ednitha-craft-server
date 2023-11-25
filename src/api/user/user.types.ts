@@ -18,6 +18,7 @@ export interface UserDocument extends Document {
   avatar: string
   role: string
   active: boolean
+  resetToken: string
   reviews?: Types.ObjectId[]
 }
 

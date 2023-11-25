@@ -1,7 +1,7 @@
 import { faker } from '@faker-js/faker';
 import { type SuperTest, type Test } from 'supertest';
 import { type UserDocument } from '../api/user/user.types';
-import { type LoginResponse } from '../auth/local/local.types';
+import { type AuthResponse } from '../auth/local/local.types';
 import { type Types } from 'mongoose';
 import path from 'path';
 import fs from 'fs';
@@ -89,7 +89,7 @@ export const reviewGenerator = async (request: SuperTest<Test>): Promise<ReviewR
   }
 };
 
-export const loginGenerator = async (request: SuperTest<Test>, email: string, password?: string): Promise<LoginResponse> => {
+export const loginGenerator = async (request: SuperTest<Test>, email: string, password?: string): Promise<AuthResponse> => {
   try {
     const login = {
       email,

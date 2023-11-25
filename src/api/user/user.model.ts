@@ -56,6 +56,10 @@ export const userSchema = new Schema(
     reviews: {
       type: [{ type: Schema.Types.ObjectId, ref: 'review' }],
       required: false
+    },
+    resetToken: {
+      type: String,
+      required: false
     }
   },
   {

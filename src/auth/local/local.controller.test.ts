@@ -49,8 +49,8 @@ describe('Local controller', () => {
 
       expect(response.status).toBe(200);
       expect(response.body).toHaveProperty('token');
-      expect(response.body).toHaveProperty('newUser');
-      expect(response.body.newUser.email).toEqual(user.email);
+      expect(response.body).toHaveProperty('data');
+      expect(response.body.data.email).toEqual(user.email);
     });
   });
 });
