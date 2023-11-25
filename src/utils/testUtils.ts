@@ -55,15 +55,12 @@ export const userAndProductGenerator = async (request: SuperTest<Test>, role: st
       category: 'doll'
     };
 
-    console.log('IMAGE', image);
-
     const { body: { data: productResponse } } = await request.post('/api/product/create')
       .set('Authorization', `Bearer ${token}`)
       .set('Content-Type', 'multipart/form-data')
       .attach('image', image)
       .field({ ...product });
 
-    console.log('PRODUCT RESPONSE', productResponse);
     return { user: email, product: productResponse._id, productImage: productResponse.image, token };
   } catch (error: any) {
     throw new Error(error.message);

@@ -28,8 +28,6 @@ describe('Product controller', () => {
         category: 'doll'
       };
 
-      console.log('EMAIL', email, 'TOKEN', token, 'PRODUCT', product);
-
       const response = await request.post('/api/product/create')
         .set('Authorization', `Bearer ${token}`)
         .set('Content-Type', 'multipart/form-data')
@@ -52,7 +50,6 @@ describe('Product controller', () => {
         price: faker.commerce.price({ min: 10, max: 500, dec: 0 }),
         category: 'doll'
       };
-      console.log('EMAIL', email, 'TOKEN', token, 'PRODUCT', product);
 
       const response = await request.post('/api/product/create')
         .set('Authorization', `Bearer ${token}`)
@@ -74,7 +71,6 @@ describe('Product controller', () => {
         price: faker.commerce.price({ min: 10, max: 500, dec: 0 }),
         category: 'doll'
       };
-      console.log('EMAIL', email, 'TOKEN', token, 'PRODUCT', product);
 
       const response = await request.post('/api/product/create')
         .set('Authorization', `Bearer ${token}`)

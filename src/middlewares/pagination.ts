@@ -1,7 +1,6 @@
 import { type Request, type NextFunction } from 'express';
 import {
   type ResponsePaginator
-  //  type PaginationQueryParams
 } from '../utils/middlewares.types';
 import { paginationGenerator } from '../utils/paginationGenerator';
 import { type ProductDocument } from '../api/product/product.types';

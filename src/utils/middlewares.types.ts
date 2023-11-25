@@ -10,15 +10,6 @@ export interface ResponsePaginator extends Response {
   filteredResults?: ProductDocument[]
 }
 
-export interface PaginationQueryParams {
-  page: string
-  limit: string
-  filter: string
-  price: string
-  rating: string
-  category: string
-}
-
 export interface PaginationResult {
   next: object
   previous: object
