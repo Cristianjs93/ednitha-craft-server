@@ -1,4 +1,4 @@
-import { type Types, type Document } from 'mongoose'
+import { type Types, type Document } from 'mongoose';
 
 export interface Review {
   _id?: Types.ObjectId

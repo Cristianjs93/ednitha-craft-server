@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-this-alias */
 import { Schema, model } from 'mongoose';
 
 export const ProductSchema = new Schema(
@@ -19,17 +20,44 @@ export const ProductSchema = new Schema(
       type: Number,
       required: [true, 'Product price is required']
     },
+    category: {
+      type: String,
+      required: [true, 'Product category is required']
+    },
     reviews: {
       type: [{ type: Schema.Types.ObjectId, ref: 'review' }],
       required: false
+    },
+    rating: {
+      type: Number,
+      default: 0
     }
   },
   {
     timestamps: true,
     versionKey: false
   }
-)
+);
 
-const ProductModel = model('product', ProductSchema)
+ProductSchema.pre('save', async function (next) {
+  const product = this;
 
-export default ProductModel
+  if (this.reviews !== undefined && this.reviews !== null) {
+    const totalRating = await this.populate('reviews').then(() => {
+      return this.reviews?.reduce((acc: number, review: any) => {
+        return acc + review.rating;
+      }, 0);
+    });
+
+    if (totalRating !== undefined) {
+      const averageRating = totalRating / this.reviews?.length;
+      product.rating = averageRating;
+
+      next();
+    }
+  }
+});
+
+const ProductModel = model('product', ProductSchema);
+
+export default ProductModel;
