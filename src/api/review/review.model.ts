@@ -1,4 +1,4 @@
-import { Schema, model } from 'mongoose'
+import { Schema, model } from 'mongoose';
 
 export const ReviewSchema = new Schema(
   {
@@ -31,8 +31,8 @@ export const ReviewSchema = new Schema(
     timestamps: true,
     versionKey: false
   }
-)
+);
 
-const ReviewModel = model('review', ReviewSchema)
+const ReviewModel = model('review', ReviewSchema);
 
-export default ReviewModel
+export default ReviewModel;
