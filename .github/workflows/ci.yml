@@ -41,4 +41,5 @@ jobs:
           CLOUDINARY_CLOUD_NAME: ${{ secrets.CLOUDINARY_CLOUD_NAME}}
           CLOUDINARY_API_KEY: ${{ secrets.CLOUDINARY_API_KEY}}
           CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET}}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
         run: npm run test
