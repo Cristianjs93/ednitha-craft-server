@@ -29,4 +29,9 @@ jobs:
           CLOUDINARY_API_KEY: ${{ secrets.CLOUDINARY_API_KEY}}
           CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET}}
           CLOUDINARY_PRESET: ${{ secrets.CLOUDINARY_PRESET}}
-        run: npm run test
+        run: |
+          echo "CLOUDINARY_CLOUD_NAME: $CLOUDINARY_CLOUD_NAME"
+          echo "CLOUDINARY_API_KEY: $CLOUDINARY_API_KEY"
+          echo "CLOUDINARY_API_SECRET: $CLOUDINARY_API_SECRET"
+          echo "CLOUDINARY_PRESET: $CLOUDINARY_PRESET"
+          npm run test
