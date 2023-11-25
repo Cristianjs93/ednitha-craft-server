@@ -16,6 +16,8 @@ export async function loginHandler (req: Request, res: Response): Promise<void> 
 
     const isMatch = await comparePassword(password, user.password);
 
+    console.log('LOGIN CONTROLLER USER', user);
+
     if (!isMatch) {
       throw new Error('Incorrect password');
     }
@@ -25,7 +27,11 @@ export async function loginHandler (req: Request, res: Response): Promise<void> 
       email: user.email
     };
 
+    console.log('PAYLOAD TYPE', payload);
+
     const token = signToken(payload);
+
+    console.log('LOGIN CONTROLLER TOKEN', token);
 
     const newUser = {
       firstname: user.name,
@@ -33,6 +39,8 @@ export async function loginHandler (req: Request, res: Response): Promise<void> 
       email: user.email,
       role: 'USER'
     };
+
+    console.log('LOGIN CONTROLLER NEWUSER', newUser);
 
     res.status(200).json({ token, newUser });
   } catch (error: any) {
