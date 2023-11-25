@@ -11,7 +11,7 @@ afterAll(async () => {
 });
 
 describe('Review controller', () => {
-  describe('POST /api/review', () => {
+  describe('POST /api/review/create', () => {
     test('Should return error: Rating is required. Comments are required', async () => {
       const { user, product, token } = await userAndProductGenerator(request, 'USER');
 

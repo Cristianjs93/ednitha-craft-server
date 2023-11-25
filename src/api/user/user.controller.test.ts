@@ -15,7 +15,7 @@ afterAll(async () => {
 });
 
 describe('User controller', () => {
-  describe('POST /api/user', () => {
+  describe('POST /api/user/register', () => {
     test('Should return error: Name must be at least 3 characters long', async () => {
       const { avatar, ...user } = {
         email: faker.internet.email({ firstName: faker.person.firstName(), lastName: faker.person.lastName(), provider: 'test.com', allowSpecialCharacters: true }),

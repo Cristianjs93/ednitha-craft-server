@@ -35,7 +35,7 @@ export const formDataProccesor = (req: Request, res: Response, next: NextFunctio
         { upload_preset: process.env.CLOUDINARY_PRESET },
         (error: UploadApiErrorResponse | undefined, res: UploadApiResponse | undefined): void => {
           if (error !== undefined) {
-            throw new Error('something went wrong uploading to Cloudinary');
+            throw new Error(error.message);
           }
 
           if (res !== undefined) {

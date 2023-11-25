@@ -16,7 +16,7 @@ afterAll(async () => {
 });
 
 describe('Product controller', () => {
-  describe('POST /api/product', () => {
+  describe('POST /api/product/create', () => {
     test('Should return error: Product name is required. Product description is required', async () => {
       const { email } = await userGenerator(request, 'ADMIN');
       const { token } = await loginGenerator(request, email);
@@ -27,6 +27,8 @@ describe('Product controller', () => {
         price: faker.commerce.price({ min: 10, max: 500, dec: 0 }),
         category: 'doll'
       };
+
+      console.log('EMAIL', email, 'TOKEN', token, 'PRODUCT', product);
 
       const response = await request.post('/api/product/create')
         .set('Authorization', `Bearer ${token}`)
@@ -50,6 +52,7 @@ describe('Product controller', () => {
         price: faker.commerce.price({ min: 10, max: 500, dec: 0 }),
         category: 'doll'
       };
+      console.log('EMAIL', email, 'TOKEN', token, 'PRODUCT', product);
 
       const response = await request.post('/api/product/create')
         .set('Authorization', `Bearer ${token}`)
@@ -71,6 +74,7 @@ describe('Product controller', () => {
         price: faker.commerce.price({ min: 10, max: 500, dec: 0 }),
         category: 'doll'
       };
+      console.log('EMAIL', email, 'TOKEN', token, 'PRODUCT', product);
 
       const response = await request.post('/api/product/create')
         .set('Authorization', `Bearer ${token}`)
@@ -78,9 +82,9 @@ describe('Product controller', () => {
         .attach('image', image)
         .field({ ...product });
 
-      expect(response.status).toBe(201);
       expect(response.body).toHaveProperty('message');
       expect(response.body.message).toEqual('Product created successfully');
+      expect(response.status).toBe(201);
       expect(response.body.data).toHaveProperty('_id');
       expect(response.body.data).toMatchObject({ name: product.name });
     });
