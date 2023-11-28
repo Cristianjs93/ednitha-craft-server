@@ -25,8 +25,8 @@ const createProductHandler = (req, res) => __awaiter(void 0, void 0, void 0, fun
 exports.createProductHandler = createProductHandler;
 const getAllProductsHandler = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const products = yield (0, product_services_1.getallProducts)();
-        res.status(200).json({ message: 'Products listed', data: products });
+        const { paginatedResults } = res;
+        res.status(200).json({ message: 'Products listed', data: paginatedResults });
     }
     catch (error) {
         res.status(400).json({ message: 'Error listing products', error: error.message });

@@ -1,11 +1,12 @@
 import { faker } from '@faker-js/faker';
 import { type SuperTest, type Test } from 'supertest';
 import { type UserDocument } from '../api/user/user.types';
-import { type LoginResponse } from '../auth/local/local.types';
+import { type AuthResponse } from '../auth/local/local.types';
 import { type Types } from 'mongoose';
 import path from 'path';
 import fs from 'fs';
 import { type ReviewDocument } from '../api/review/review.types';
+import UserModel from '../api/user/user.model';
 
 interface Generator {
   user: string
@@ -42,9 +43,12 @@ export const userGenerator = async (request: SuperTest<Test>, role: string): Pro
   }
 };
 
-export const userAndProductGenerator = async (request: SuperTest<Test>, role: string): Promise<Generator> => {
+export const adminAndProductGenerator = async (request: SuperTest<Test>): Promise<Generator> => {
   try {
     const { email } = await userGenerator(request, 'ADMIN');
+
+    await verifyAccountGenerator(email);
+
     const { token } = await loginGenerator(request, email);
 
     const { image, ...product } = {
@@ -69,7 +73,7 @@ export const userAndProductGenerator = async (request: SuperTest<Test>, role: st
 
 export const reviewGenerator = async (request: SuperTest<Test>): Promise<ReviewResponse> => {
   try {
-    const { user, product, token } = await userAndProductGenerator(request, 'USER');
+    const { user, product, token } = await adminAndProductGenerator(request);
 
     const review = {
       rating: faker.number.int({ min: 1, max: 5 }),
@@ -89,7 +93,16 @@ export const reviewGenerator = async (request: SuperTest<Test>): Promise<ReviewR
   }
 };
 
-export const loginGenerator = async (request: SuperTest<Test>, email: string, password?: string): Promise<LoginResponse> => {
+export const verifyAccountGenerator = async (email: string): Promise<void> => {
+  const update = {
+    resetToken: null,
+    active: true
+  };
+
+  await UserModel.findOneAndUpdate({ email }, update, { new: true });
+};
+
+export const loginGenerator = async (request: SuperTest<Test>, email: string, password?: string): Promise<AuthResponse> => {
   try {
     const login = {
       email,

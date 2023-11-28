@@ -2,9 +2,10 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const review_controller_1 = require("./review.controller");
+const auth_controller_1 = require("../../auth/auth.controller");
 const router = (0, express_1.Router)();
-router.post('/create', review_controller_1.createReviewHandler);
+router.post('/create', auth_controller_1.isAuthenticated, (0, auth_controller_1.hasRole)(['USER', 'ADMIN']), review_controller_1.createReviewHandler);
 router.get('/', review_controller_1.getAllReviewsHandler);
-router.put('/update', review_controller_1.updateReviewHandler);
-router.delete('/delete', review_controller_1.deleteReviewHandler);
+router.put('/update', auth_controller_1.isAuthenticated, (0, auth_controller_1.hasRole)(['USER', 'ADMIN']), review_controller_1.updateReviewHandler);
+router.delete('/delete', auth_controller_1.isAuthenticated, (0, auth_controller_1.hasRole)(['USER', 'ADMIN']), review_controller_1.deleteReviewHandler);
 exports.default = router;

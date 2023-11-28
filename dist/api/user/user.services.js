@@ -30,9 +30,10 @@ const bcrypt_1 = require("../../auth/utils/bcrypt");
 const createUser = (input) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const hashedPassword = yield (0, bcrypt_1.hashPassword)(input.password);
-        const newUser = Object.assign(Object.assign({}, input), { password: hashedPassword });
+        const hashToken = (0, bcrypt_1.createHashToken)(input.email);
+        const newUser = Object.assign(Object.assign({}, input), { resetToken: hashToken, password: hashedPassword });
         const user = yield user_model_1.default.create(newUser);
-        const _a = user.toObject(), { _id } = _a, userWithoutId = __rest(_a, ["_id"]);
+        const _a = user.toObject(), { _id, password, resetToken } = _a, userWithoutId = __rest(_a, ["_id", "password", "resetToken"]);
         return userWithoutId;
     }
     catch (error) {
@@ -43,7 +44,7 @@ const createUser = (input) => __awaiter(void 0, void 0, void 0, function* () {
 exports.createUser = createUser;
 const getAllUsers = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const users = yield user_model_1.default.find().select('-_id').populate('reviews');
+        const users = yield user_model_1.default.find().select('-_id -password  -resetToken').populate('reviews');
         if (users === null) {
             throw new Error('Something went wrong when getting all users, please try again later');
         }
@@ -56,7 +57,7 @@ const getAllUsers = () => __awaiter(void 0, void 0, void 0, function* () {
 exports.getAllUsers = getAllUsers;
 const getUserByEmail = (email) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const user = yield user_model_1.default.findOne({ email }).select('-_id').populate('name', 'email');
+        const user = yield user_model_1.default.findOne({ email }).select('-_id -password -resetToken').populate('name', 'email');
         if (user === null) {
             throw new Error('User not found');
         }
@@ -70,7 +71,7 @@ exports.getUserByEmail = getUserByEmail;
 const updateUser = (data) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { email } = data;
-        const user = yield user_model_1.default.findOneAndUpdate({ email }, data, { new: true }).select('-_id');
+        const user = yield user_model_1.default.findOneAndUpdate({ email }, data, { new: true }).select('-_id -password -resetToken');
         if (user === null) {
             throw new Error('User not found');
         }
@@ -83,7 +84,7 @@ const updateUser = (data) => __awaiter(void 0, void 0, void 0, function* () {
 exports.updateUser = updateUser;
 const deleteUser = (email) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const user = yield user_model_1.default.findOneAndDelete({ email }).select('-_id');
+        const user = yield user_model_1.default.findOneAndDelete({ email }).select('-_id -password -resetToken');
         if (user === null) {
             throw new Error('User not found');
         }

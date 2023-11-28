@@ -1,4 +1,4 @@
-import { type Response, type NextFunction } from 'express';
+import { type Response, type NextFunction, type Handler } from 'express';
 import { getUserByEmail } from '../api/user/user.services';
 import { type AuthRequestUser } from './auth.types';
 import { verifyToken } from './auth.services';
@@ -32,8 +32,8 @@ export const isAuthenticated = async (
   }
 };
 
-export function hasRole (rolesAllowed: string[]) {
-  return async (req: AuthRequestUser, res: Response, next: NextFunction) => {
+export const hasRole = (rolesAllowed: string[]): Handler => {
+  return async (req: AuthRequestUser, res: Response, next: NextFunction): Promise<void> => {
     try {
       const { role } = req.user as UserDocument;
       const hasPermission = rolesAllowed.includes(role);
@@ -47,4 +47,4 @@ export function hasRole (rolesAllowed: string[]) {
       res.status(400).json({ message: 'Something went wrong, please try again', error: error.message });
     }
   };
-}
+};

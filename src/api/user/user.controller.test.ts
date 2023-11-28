@@ -4,6 +4,7 @@ import { faker } from '@faker-js/faker';
 import mongoose from 'mongoose';
 import {
   userGenerator,
+  verifyAccountGenerator,
   loginGenerator,
   readBuffer
 } from '../../utils/testUtils';
@@ -101,9 +102,13 @@ describe('User controller', () => {
   describe('GET /api/user', () => {
     test('Should return status 200 OK', async () => {
       const { email } = await userGenerator(request, 'ADMIN');
+
+      await verifyAccountGenerator(email);
+
       const { token } = await loginGenerator(request, email);
 
-      const response = await request.get('/api/user').set('Authorization', `Bearer ${token}`);
+      const response = await request.get('/api/user')
+        .set('Authorization', `Bearer ${token}`);
 
       expect(response.status).toBe(200);
       expect(response.body).toHaveProperty('message');
@@ -114,10 +119,15 @@ describe('User controller', () => {
   describe('GET /api/user/email', () => {
     test('Should return error: User not found', async () => {
       const { email } = await userGenerator(request, 'ADMIN');
+
+      await verifyAccountGenerator(email);
+
       const { token } = await loginGenerator(request, email);
       const searchEmail = 'example@test.com';
 
-      const response = await request.get('/api/user/email').set('Authorization', `Bearer ${token}`).send({ email: searchEmail });
+      const response = await request.get('/api/user/email')
+        .set('Authorization', `Bearer ${token}`)
+        .send({ email: searchEmail });
 
       expect(response.status).toBe(400);
       expect(response.body).toHaveProperty('message');
@@ -127,9 +137,14 @@ describe('User controller', () => {
     });
     test('Should return status 200 OK', async () => {
       const { email } = await userGenerator(request, 'ADMIN');
+
+      await verifyAccountGenerator(email);
+
       const { token } = await loginGenerator(request, email);
 
-      const response = await request.get('/api/user/email').set('Authorization', `Bearer ${token}`).send({ email });
+      const response = await request.get('/api/user/email')
+        .set('Authorization', `Bearer ${token}`)
+        .send({ email });
 
       expect(response.status).toBe(200);
       expect(response.body).toHaveProperty('message');
@@ -141,6 +156,9 @@ describe('User controller', () => {
   describe('PUT /api/user/update', () => {
     test('Should return status 200', async () => {
       const { email } = await userGenerator(request, 'USER');
+
+      await verifyAccountGenerator(email);
+
       const { token } = await loginGenerator(request, email);
       const updatedUser = {
         email,
@@ -165,9 +183,14 @@ describe('User controller', () => {
   describe('DELETE /api/user/delete', () => {
     test('Should return status 200', async () => {
       const { email } = await userGenerator(request, 'USER');
+
+      await verifyAccountGenerator(email);
+
       const { token } = await loginGenerator(request, email);
 
-      const response = await request.delete('/api/user/delete').set('Authorization', `Bearer ${token}`).send({ email });
+      const response = await request.delete('/api/user/delete')
+        .set('Authorization', `Bearer ${token}`)
+        .send({ email });
 
       expect(response.status).toBe(200);
       expect(response.body).toHaveProperty('message');

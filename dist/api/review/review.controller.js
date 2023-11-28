@@ -52,8 +52,8 @@ const updateReviewHandler = (req, res) => __awaiter(void 0, void 0, void 0, func
 exports.updateReviewHandler = updateReviewHandler;
 const deleteReviewHandler = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { user, productId, reviewId } = req.body;
-        yield (0, reviewUtils_1.reviewRemove)(user, productId, reviewId);
+        const { user, product, reviewId } = req.body;
+        yield (0, reviewUtils_1.reviewRemove)(user, product, reviewId);
         const review = yield (0, review_services_1.deleteReview)(reviewId);
         res.status(200).json({ message: 'Review deleted successfully', data: review });
     }

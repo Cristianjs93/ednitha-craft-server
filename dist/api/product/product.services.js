@@ -44,6 +44,9 @@ const updateProduct = (data) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { _id } = data;
         const product = yield product_model_1.default.findOneAndUpdate({ _id }, data, { new: true });
+        if (product === null) {
+            throw new Error('Product not found');
+        }
         return product;
     }
     catch (error) {
