@@ -1,9 +1,6 @@
-export interface LoginResponse {
+import { type UserDocument } from '../../api/user/user.types';
+
+export interface AuthResponse {
   token: string
-  newUser: {
-    firstname: string
-    lastname: string
-    email: string
-    role: string
-  }
+  profile: UserDocument
 }

@@ -3,10 +3,11 @@ import app from '../../app';
 import { faker } from '@faker-js/faker';
 import mongoose from 'mongoose';
 import {
-  readBuffer,
-  loginGenerator,
   userGenerator,
-  userAndProductGenerator
+  adminAndProductGenerator,
+  verifyAccountGenerator,
+  loginGenerator,
+  readBuffer
 } from '../../utils/testUtils';
 
 const request = supertest(app);
@@ -19,6 +20,9 @@ describe('Product controller', () => {
   describe('POST /api/product/create', () => {
     test('Should return error: Product name is required. Product description is required', async () => {
       const { email } = await userGenerator(request, 'ADMIN');
+
+      await verifyAccountGenerator(email);
+
       const { token } = await loginGenerator(request, email);
       const { image, ...product } = {
         image: readBuffer('../assets/images/fake-product.jpg'),
@@ -42,6 +46,9 @@ describe('Product controller', () => {
     });
     test('Should return error: Product name must be at least 4 characters long', async () => {
       const { email } = await userGenerator(request, 'ADMIN');
+
+      await verifyAccountGenerator(email);
+
       const { token } = await loginGenerator(request, email);
       const { image, ...product } = {
         image: readBuffer('../assets/images/fake-product.jpg'),
@@ -63,6 +70,9 @@ describe('Product controller', () => {
     });
     test('Should return status 201 Created', async () => {
       const { email } = await userGenerator(request, 'ADMIN');
+
+      await verifyAccountGenerator(email);
+
       const { token } = await loginGenerator(request, email);
       const { image, ...product } = {
         image: readBuffer('../assets/images/fake-product.jpg'),
@@ -99,7 +109,7 @@ describe('Product controller', () => {
   });
   describe('PUT /api/product/update', () => {
     test('Should return status 200', async () => {
-      const { product, productImage, token } = await userAndProductGenerator(request, 'ADMIN');
+      const { product, productImage, token } = await adminAndProductGenerator(request);
       const { image, ...updatedProduct } = {
         _id: product as unknown as string,
         price: faker.commerce.price({ min: 10, max: 500, dec: 0 }),
@@ -121,8 +131,25 @@ describe('Product controller', () => {
     });
   });
   describe('DELETE /api/product/delete', () => {
+    test('Should return error: Invalid credentials', async () => {
+      const { product: _id } = await adminAndProductGenerator(request);
+
+      const { email } = await userGenerator(request, 'USER');
+
+      await verifyAccountGenerator(email);
+
+      const { token } = await loginGenerator(request, email);
+
+      const response = await request.delete('/api/product/delete')
+        .set('Authorization', `Bearer ${token}`)
+        .send({ _id });
+
+      expect(response.status).toBe(400);
+      expect(response.body).toHaveProperty('error');
+      expect(response.body.error).toEqual('Invalid credentials');
+    }, 10000);
     test('Should return status 200', async () => {
-      const { product: _id, token } = await userAndProductGenerator(request, 'ADMIN');
+      const { product: _id, token } = await adminAndProductGenerator(request);
 
       const response = await request.delete('/api/product/delete')
         .set('Authorization', `Bearer ${token}`)
@@ -133,6 +160,6 @@ describe('Product controller', () => {
       expect(response.body.message).toEqual('Product deleted successfully');
       expect(response.body).toHaveProperty('data');
       expect(response.body.data._id).toEqual(_id);
-    });
+    }, 10000);
   });
 });
