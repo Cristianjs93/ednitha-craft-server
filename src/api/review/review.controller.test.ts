@@ -2,7 +2,7 @@ import supertest from 'supertest';
 import app from '../../app';
 import { faker } from '@faker-js/faker';
 import mongoose from 'mongoose';
-import { userAndProductGenerator, reviewGenerator } from '../../utils/testUtils';
+import { adminAndProductGenerator, reviewGenerator } from '../../utils/testUtils';
 
 const request = supertest(app);
 
@@ -13,7 +13,7 @@ afterAll(async () => {
 describe('Review controller', () => {
   describe('POST /api/review/create', () => {
     test('Should return error: Rating is required. Comments are required', async () => {
-      const { user, product, token } = await userAndProductGenerator(request, 'USER');
+      const { user, product, token } = await adminAndProductGenerator(request);
 
       const review = {
         rating: '',
@@ -23,7 +23,9 @@ describe('Review controller', () => {
         product
       };
 
-      const response = await request.post('/api/review/create').set('Authorization', `Bearer ${token}`).send(review);
+      const response = await request.post('/api/review/create')
+        .set('Authorization', `Bearer ${token}`)
+        .send(review);
 
       expect(response.status).toBe(400);
       expect(response.body).toHaveProperty('message');
@@ -32,7 +34,7 @@ describe('Review controller', () => {
       expect(response.body.error).toEqual('Rating is required. Comments are required');
     });
     test('Should return error: Comments must be at least 4 characters long', async () => {
-      const { user, product, token } = await userAndProductGenerator(request, 'USER');
+      const { user, product, token } = await adminAndProductGenerator(request);
 
       const review = {
         rating: faker.number.int({ min: 1, max: 5 }),
@@ -42,7 +44,9 @@ describe('Review controller', () => {
         product
       };
 
-      const response = await request.post('/api/review/create').set('Authorization', `Bearer ${token}`).send(review);
+      const response = await request.post('/api/review/create')
+        .set('Authorization', `Bearer ${token}`)
+        .send(review);
 
       expect(response.status).toBe(400);
       expect(response.body).toHaveProperty('message');
@@ -51,7 +55,7 @@ describe('Review controller', () => {
       expect(response.body.error).toEqual('Comments must be at least 4 characters long');
     });
     test('Should return status 201 Created', async () => {
-      const { user, product, token } = await userAndProductGenerator(request, 'USER');
+      const { user, product, token } = await adminAndProductGenerator(request);
 
       const review = {
         rating: faker.number.int({ min: 1, max: 5 }),
@@ -61,7 +65,9 @@ describe('Review controller', () => {
         product
       };
 
-      const response = await request.post('/api/review/create').set('Authorization', `Bearer ${token}`).send(review);
+      const response = await request.post('/api/review/create')
+        .set('Authorization', `Bearer ${token}`)
+        .send(review);
 
       expect(response.status).toBe(201);
       expect(response.body).toHaveProperty('message');

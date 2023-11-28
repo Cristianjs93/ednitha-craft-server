@@ -2,7 +2,14 @@ import supertest from 'supertest';
 import app from '../app';
 import { faker } from '@faker-js/faker';
 import mongoose from 'mongoose';
-import { userGenerator, readBuffer, loginGenerator, userAndProductGenerator, reviewGenerator } from '../utils/testUtils';
+import {
+  userGenerator,
+  adminAndProductGenerator,
+  reviewGenerator,
+  verifyAccountGenerator,
+  loginGenerator,
+  readBuffer
+} from '../utils/testUtils';
 
 const request = supertest(app);
 
@@ -21,6 +28,9 @@ describe('auth controller', () => {
     });
     test('Should return error: Invalid credentials', async () => {
       const { email } = await userGenerator(request, 'USER');
+
+      await verifyAccountGenerator(email);
+
       const { token } = await loginGenerator(request, email);
 
       const response = await request.get('/api/user').set('Authorization', `Bearer ${token}`);
@@ -31,6 +41,9 @@ describe('auth controller', () => {
     });
     test('Should return status 200 OK', async () => {
       const { email } = await userGenerator(request, 'ADMIN');
+
+      await verifyAccountGenerator(email);
+
       const { token } = await loginGenerator(request, email);
 
       const response = await request.get('/api/user').set('Authorization', `Bearer ${token}`);
@@ -44,6 +57,9 @@ describe('auth controller', () => {
   describe('POST /api/product', () => {
     test('Should return error: Invalid credentials', async () => {
       const { email } = await userGenerator(request, 'USER');
+
+      await verifyAccountGenerator(email);
+
       const { token } = await loginGenerator(request, email);
       const { image, ...product } = {
         image: readBuffer('../assets/images/fake-product.jpg'),
@@ -65,6 +81,9 @@ describe('auth controller', () => {
     });
     test('Should return status 201 Created', async () => {
       const { email } = await userGenerator(request, 'ADMIN');
+
+      await verifyAccountGenerator(email);
+
       const { token } = await loginGenerator(request, email);
       const { image, ...product } = {
         image: readBuffer('../assets/images/fake-product.jpg'),
@@ -89,9 +108,12 @@ describe('auth controller', () => {
   });
   describe('DELETE /api/product', () => {
     test('Should return error: Invalid credentials', async () => {
-      const { product: _id } = await userAndProductGenerator(request, 'ADMIN');
+      const { product: _id } = await adminAndProductGenerator(request);
 
       const { email } = await userGenerator(request, 'USER');
+
+      await verifyAccountGenerator(email);
+
       const { token } = await loginGenerator(request, email);
 
       const response = await request.delete('/api/product/delete')
@@ -103,7 +125,7 @@ describe('auth controller', () => {
       expect(response.body.error).toEqual('Invalid credentials');
     }, 10000);
     test('Should return status 200', async () => {
-      const { product: _id, token } = await userAndProductGenerator(request, 'ADMIN');
+      const { product: _id, token } = await adminAndProductGenerator(request);
 
       const response = await request.delete('/api/product/delete')
         .set('Authorization', `Bearer ${token}`)
@@ -118,7 +140,7 @@ describe('auth controller', () => {
   });
   describe('POST /api/review', () => {
     test('Should return error: Unauthorized! You have to log in first', async () => {
-      const { user, product } = await userAndProductGenerator(request, 'USER');
+      const { user, product } = await adminAndProductGenerator(request);
 
       const review = {
         rating: faker.number.int({ min: 1, max: 5 }),
@@ -135,7 +157,7 @@ describe('auth controller', () => {
       expect(response.body.error).toEqual('Unauthorized! You have to log in first');
     });
     test('Should return status 201 Created', async () => {
-      const { user, product, token } = await userAndProductGenerator(request, 'USER');
+      const { user, product, token } = await adminAndProductGenerator(request);
 
       const review = {
         rating: faker.number.int({ min: 1, max: 5 }),
