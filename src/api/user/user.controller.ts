@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/strict-boolean-expressions */
-import { config } from 'dotenv';
 import { type Request, type Response } from 'express';
 import {
   createUser,
@@ -10,8 +9,6 @@ import {
 } from './user.services';
 import { sendMailSenGrid } from '../../config/sendGrid';
 import { welcomeEmail } from '../../utils/sendEmail';
-
-config();
 
 export const createUserHandler = async (req: Request, res: Response): Promise<void> => {
   try {
