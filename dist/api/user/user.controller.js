@@ -8,13 +8,27 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __rest = (this && this.__rest) || function (s, e) {
+    var t = {};
+    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+        t[p] = s[p];
+    if (s != null && typeof Object.getOwnPropertySymbols === "function")
+        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
+            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
+                t[p[i]] = s[p[i]];
+        }
+    return t;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteUserHandler = exports.updateUserHandler = exports.getUserByEmailHandler = exports.getAllUsersHandler = exports.createUserHandler = void 0;
 const user_services_1 = require("./user.services");
+const sendGrid_1 = require("../../config/sendGrid");
+const sendEmail_1 = require("../../utils/sendEmail");
 const createUserHandler = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const data = req.body;
-        const user = yield (0, user_services_1.createUser)(data);
+        const _a = yield (0, user_services_1.createUser)(data), { resetToken } = _a, user = __rest(_a, ["resetToken"]);
+        yield (0, sendGrid_1.sendMailSenGrid)((0, sendEmail_1.welcomeEmail)(user, resetToken));
         res.status(201).json({ message: 'User created successfully', data: user });
     }
     catch (error) {

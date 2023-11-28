@@ -32,7 +32,11 @@ export const formDataProccesor = (req: Request, res: Response, next: NextFunctio
       countFiles++;
 
       const cloud = cloudinary.uploader.upload_stream(
-        { upload_preset: process.env.CLOUDINARY_PRESET },
+        {
+          upload_preset: process.env.NODE_ENV === 'test'
+            ? process.env.CLOUDINARY_PRESET_TEST
+            : process.env.CLOUDINARY_PRESET
+        },
         (error: UploadApiErrorResponse | undefined, res: UploadApiResponse | undefined): void => {
           if (error !== undefined) {
             throw new Error(error.message);

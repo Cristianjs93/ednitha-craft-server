@@ -43,7 +43,7 @@ describe('Product controller', () => {
       expect(response.body.message).toEqual('Error creating product');
       expect(response.body).toHaveProperty('error');
       expect(response.body.error).toEqual('Product name is required. Product description is required');
-    });
+    }, 10000);
     test('Should return error: Product name must be at least 4 characters long', async () => {
       const { email } = await userGenerator(request, 'ADMIN');
 
@@ -67,7 +67,7 @@ describe('Product controller', () => {
       expect(response.status).toBe(400);
       expect(response.body).toHaveProperty('error');
       expect(response.body.error).toEqual('Product name must be at least 4 characters long');
-    });
+    }, 10000);
     test('Should return status 201 Created', async () => {
       const { email } = await userGenerator(request, 'ADMIN');
 
@@ -93,7 +93,7 @@ describe('Product controller', () => {
       expect(response.status).toBe(201);
       expect(response.body.data).toHaveProperty('_id');
       expect(response.body.data).toMatchObject({ name: product.name });
-    });
+    }, 10000);
   });
   describe('GET /api/product', () => {
     test('Should return status 200 OK', async () => {

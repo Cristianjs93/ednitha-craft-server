@@ -28,7 +28,11 @@ const formDataProccesor = (req, res, next) => {
         bb.on('file', (key, stream) => {
             uploadingFile = true;
             countFiles++;
-            const cloud = cloudinary_1.default.uploader.upload_stream({ upload_preset: process.env.CLOUDINARY_PRESET }, (error, res) => {
+            const cloud = cloudinary_1.default.uploader.upload_stream({
+                upload_preset: process.env.NODE_ENV === 'test'
+                    ? process.env.CLOUDINARY_PRESET_TEST
+                    : process.env.CLOUDINARY_PRESET
+            }, (error, res) => {
                 if (error !== undefined) {
                     throw new Error(error.message);
                 }

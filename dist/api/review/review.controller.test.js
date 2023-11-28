@@ -40,7 +40,7 @@ describe('Review controller', () => {
             expect(response.body.message).toEqual('Error creating review');
             expect(response.body).toHaveProperty('error');
             expect(response.body.error).toEqual('Rating is required. Comments are required');
-        }));
+        }), 10000);
         test('Should return error: Comments must be at least 4 characters long', () => __awaiter(void 0, void 0, void 0, function* () {
             const { user, product, token } = yield (0, testUtils_1.adminAndProductGenerator)(request);
             const review = {
@@ -58,7 +58,7 @@ describe('Review controller', () => {
             expect(response.body.message).toEqual('Error creating review');
             expect(response.body).toHaveProperty('error');
             expect(response.body.error).toEqual('Comments must be at least 4 characters long');
-        }));
+        }), 10000);
         test('Should return status 201 Created', () => __awaiter(void 0, void 0, void 0, function* () {
             const { user, product, token } = yield (0, testUtils_1.adminAndProductGenerator)(request);
             const review = {
@@ -76,7 +76,7 @@ describe('Review controller', () => {
             expect(response.body.message).toEqual('Review created successfully');
             expect(response.body.data).toHaveProperty('_id');
             expect(response.body.data).toMatchObject({ title: review.title });
-        }));
+        }), 10000);
     });
     describe('GET /api/review', () => {
         test('Should return status 200 OK', () => __awaiter(void 0, void 0, void 0, function* () {
@@ -104,7 +104,7 @@ describe('Review controller', () => {
             expect(response.body).toHaveProperty('data');
             expect(response.body.data.rating).toEqual(updatedReview.rating);
             expect(response.body.data.comments).toEqual(updatedReview.comments);
-        }));
+        }), 10000);
     });
     describe('DELETE /api/review/delete', () => {
         test('Should return status 200', () => __awaiter(void 0, void 0, void 0, function* () {
