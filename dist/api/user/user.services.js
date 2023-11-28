@@ -33,7 +33,7 @@ const createUser = (input) => __awaiter(void 0, void 0, void 0, function* () {
         const hashToken = (0, bcrypt_1.createHashToken)(input.email);
         const newUser = Object.assign(Object.assign({}, input), { resetToken: hashToken, password: hashedPassword });
         const user = yield user_model_1.default.create(newUser);
-        const _a = user.toObject(), { _id, password, resetToken } = _a, userWithoutId = __rest(_a, ["_id", "password", "resetToken"]);
+        const _a = user.toObject(), { _id, password } = _a, userWithoutId = __rest(_a, ["_id", "password"]);
         return userWithoutId;
     }
     catch (error) {

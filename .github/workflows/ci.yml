@@ -29,4 +29,6 @@ jobs:
           CLOUDINARY_API_KEY: ${{ secrets.CLOUDINARY_API_KEY}}
           CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET}}
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          DB_CONNECTION_STRING: ${{ secrets.DB_CONNECTION_STRING }}
+          DB_CONNECTION_STRING_TEST: ${{ secrets.DB_CONNECTION_STRING_TEST }}
         run: npm run test

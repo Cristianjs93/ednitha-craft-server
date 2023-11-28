@@ -8,7 +8,9 @@ let connection: Connection | null = null;
 const connect = async (): Promise<void> => {
   if (connection != null) return;
 
-  const MONGO_URI = process.env.DB_CONNECTION_STRING as string;
+  const MONGO_URI = process.env.NODE_ENV === 'test'
+    ? process.env.DB_CONNECTION_STRING_TEST as string
+    : process.env.DB_CONNECTION_STRING as string;
 
   connection = mongoose.connection;
 

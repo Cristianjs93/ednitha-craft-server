@@ -7,6 +7,7 @@ export interface User {
   avatar: string
   role: string
   active: boolean
+  resetToken?: string
   reviews?: Types.ObjectId[]
 }
 

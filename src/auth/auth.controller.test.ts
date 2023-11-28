@@ -38,7 +38,7 @@ describe('auth controller', () => {
       expect(response.status).toBe(400);
       expect(response.body).toHaveProperty('error');
       expect(response.body.error).toEqual('Invalid credentials');
-    });
+    }, 10000);
     test('Should return status 200 OK', async () => {
       const { email } = await userGenerator(request, 'ADMIN');
 
@@ -52,7 +52,7 @@ describe('auth controller', () => {
       expect(response.body).toHaveProperty('message');
       expect(response.body).toHaveProperty('data');
       expect(response.body.message).toEqual('Users listed');
-    });
+    }, 10000);
   });
   describe('POST /api/product', () => {
     test('Should return error: Invalid credentials', async () => {
@@ -78,7 +78,7 @@ describe('auth controller', () => {
       expect(response.status).toBe(400);
       expect(response.body).toHaveProperty('error');
       expect(response.body.error).toEqual('Invalid credentials');
-    });
+    }, 10000);
     test('Should return status 201 Created', async () => {
       const { email } = await userGenerator(request, 'ADMIN');
 
@@ -104,7 +104,7 @@ describe('auth controller', () => {
       expect(response.body.message).toEqual('Product created successfully');
       expect(response.body.data).toHaveProperty('_id');
       expect(response.body.data).toMatchObject({ name: product.name });
-    });
+    }, 10000);
   });
   describe('DELETE /api/product', () => {
     test('Should return error: Invalid credentials', async () => {

@@ -7,11 +7,17 @@ import {
   updateUser,
   deleteUser
 } from './user.services';
+import { sendMailSenGrid } from '../../config/sendGrid';
+import { welcomeEmail } from '../../utils/sendEmail';
 
 export const createUserHandler = async (req: Request, res: Response): Promise<void> => {
   try {
     const data = req.body;
-    const user = await createUser(data);
+
+    const { resetToken, ...user } = await createUser(data);
+
+    await sendMailSenGrid(welcomeEmail(user, resetToken));
+
     res.status(201).json({ message: 'User created successfully', data: user });
   } catch (error: any) {
     res.status(400).json({ message: 'Error creating user', error: error.message });
