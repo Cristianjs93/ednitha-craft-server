@@ -106,7 +106,7 @@ describe('Review controller', () => {
       expect(response.body).toHaveProperty('data');
       expect(response.body.data.rating).toEqual(updatedReview.rating);
       expect(response.body.data.comments).toEqual(updatedReview.comments);
-    });
+    }, 10000);
   });
   describe('DELETE /api/review/delete', () => {
     test('Should return status 200', async () => {

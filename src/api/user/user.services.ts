@@ -13,8 +13,10 @@ export const createUser = async (input: User): Promise<UserDocument> => {
       resetToken: hashToken,
       password: hashedPassword
     };
+
     const user = await UserModel.create(newUser) as UserDocument;
-    const { _id, password, resetToken, ...userWithoutId } = user.toObject();
+
+    const { _id, password, ...userWithoutId } = user.toObject();
     return userWithoutId;
   } catch (error: any) {
     const message = validatorErrorHandler(error);
