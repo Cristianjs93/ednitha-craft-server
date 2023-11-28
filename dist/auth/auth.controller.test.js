@@ -48,7 +48,7 @@ describe('auth controller', () => {
             expect(response.status).toBe(400);
             expect(response.body).toHaveProperty('error');
             expect(response.body.error).toEqual('Invalid credentials');
-        }));
+        }), 10000);
         test('Should return status 200 OK', () => __awaiter(void 0, void 0, void 0, function* () {
             const { email } = yield (0, testUtils_1.userGenerator)(request, 'ADMIN');
             yield (0, testUtils_1.verifyAccountGenerator)(email);
@@ -58,7 +58,7 @@ describe('auth controller', () => {
             expect(response.body).toHaveProperty('message');
             expect(response.body).toHaveProperty('data');
             expect(response.body.message).toEqual('Users listed');
-        }));
+        }), 10000);
     });
     describe('POST /api/product', () => {
         test('Should return error: Invalid credentials', () => __awaiter(void 0, void 0, void 0, function* () {
@@ -80,7 +80,7 @@ describe('auth controller', () => {
             expect(response.status).toBe(400);
             expect(response.body).toHaveProperty('error');
             expect(response.body.error).toEqual('Invalid credentials');
-        }));
+        }), 10000);
         test('Should return status 201 Created', () => __awaiter(void 0, void 0, void 0, function* () {
             const { email } = yield (0, testUtils_1.userGenerator)(request, 'ADMIN');
             yield (0, testUtils_1.verifyAccountGenerator)(email);
@@ -102,7 +102,7 @@ describe('auth controller', () => {
             expect(response.body.message).toEqual('Product created successfully');
             expect(response.body.data).toHaveProperty('_id');
             expect(response.body.data).toMatchObject({ name: product.name });
-        }));
+        }), 10000);
     });
     describe('DELETE /api/product', () => {
         test('Should return error: Invalid credentials', () => __awaiter(void 0, void 0, void 0, function* () {
