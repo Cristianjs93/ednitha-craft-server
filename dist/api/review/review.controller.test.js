@@ -16,23 +16,25 @@ const supertest_1 = __importDefault(require("supertest"));
 const app_1 = __importDefault(require("../../app"));
 const faker_1 = require("@faker-js/faker");
 const mongoose_1 = __importDefault(require("mongoose"));
-const testUtils_1 = require("../utils/testUtils");
+const testUtils_1 = require("../../utils/testUtils");
 const request = (0, supertest_1.default)(app_1.default);
 afterAll(() => __awaiter(void 0, void 0, void 0, function* () {
     yield mongoose_1.default.disconnect();
 }));
 describe('Review controller', () => {
-    describe('POST /api/review', () => {
+    describe('POST /api/review/create', () => {
         test('Should return error: Rating is required. Comments are required', () => __awaiter(void 0, void 0, void 0, function* () {
-            const { reviewUser, reviewProduct } = yield (0, testUtils_1.userAndProductGenerator)(request);
+            const { user, product, token } = yield (0, testUtils_1.adminAndProductGenerator)(request);
             const review = {
                 rating: '',
                 title: faker_1.faker.commerce.productAdjective(),
                 comments: '',
-                user: reviewUser.email,
-                product: reviewProduct._id
+                user,
+                product
             };
-            const response = yield request.post('/api/review/create').send(review);
+            const response = yield request.post('/api/review/create')
+                .set('Authorization', `Bearer ${token}`)
+                .send(review);
             expect(response.status).toBe(400);
             expect(response.body).toHaveProperty('message');
             expect(response.body.message).toEqual('Error creating review');
@@ -40,15 +42,17 @@ describe('Review controller', () => {
             expect(response.body.error).toEqual('Rating is required. Comments are required');
         }));
         test('Should return error: Comments must be at least 4 characters long', () => __awaiter(void 0, void 0, void 0, function* () {
-            const { reviewUser, reviewProduct } = yield (0, testUtils_1.userAndProductGenerator)(request);
+            const { user, product, token } = yield (0, testUtils_1.adminAndProductGenerator)(request);
             const review = {
                 rating: faker_1.faker.number.int({ min: 1, max: 5 }),
                 title: faker_1.faker.commerce.productAdjective(),
                 comments: 'abc',
-                user: reviewUser.email,
-                product: reviewProduct._id
+                user,
+                product
             };
-            const response = yield request.post('/api/review/create').send(review);
+            const response = yield request.post('/api/review/create')
+                .set('Authorization', `Bearer ${token}`)
+                .send(review);
             expect(response.status).toBe(400);
             expect(response.body).toHaveProperty('message');
             expect(response.body.message).toEqual('Error creating review');
@@ -56,15 +60,17 @@ describe('Review controller', () => {
             expect(response.body.error).toEqual('Comments must be at least 4 characters long');
         }));
         test('Should return status 201 Created', () => __awaiter(void 0, void 0, void 0, function* () {
-            const { reviewUser, reviewProduct } = yield (0, testUtils_1.userAndProductGenerator)(request);
+            const { user, product, token } = yield (0, testUtils_1.adminAndProductGenerator)(request);
             const review = {
                 rating: faker_1.faker.number.int({ min: 1, max: 5 }),
                 title: faker_1.faker.commerce.productAdjective(),
                 comments: faker_1.faker.commerce.productDescription(),
-                user: reviewUser.email,
-                product: reviewProduct._id
+                user,
+                product
             };
-            const response = yield request.post('/api/review/create').send(review);
+            const response = yield request.post('/api/review/create')
+                .set('Authorization', `Bearer ${token}`)
+                .send(review);
             expect(response.status).toBe(201);
             expect(response.body).toHaveProperty('message');
             expect(response.body.message).toEqual('Review created successfully');
@@ -83,21 +89,15 @@ describe('Review controller', () => {
     });
     describe('PUT /api/review/update', () => {
         test('Should return status 200', () => __awaiter(void 0, void 0, void 0, function* () {
-            const { reviewUser, reviewProduct } = yield (0, testUtils_1.userAndProductGenerator)(request);
-            const review = {
-                rating: faker_1.faker.number.int({ min: 1, max: 5 }),
-                title: faker_1.faker.commerce.productAdjective(),
-                comments: faker_1.faker.commerce.productDescription(),
-                user: reviewUser.email,
-                product: reviewProduct._id
-            };
-            const reviewCreateResponse = yield request.post('/api/review/create').send(review);
+            const { review, token } = yield (0, testUtils_1.reviewGenerator)(request);
             const updatedReview = {
-                _id: reviewCreateResponse.body.data._id,
+                _id: review._id,
                 rating: faker_1.faker.number.int({ min: 1, max: 5 }),
                 comments: faker_1.faker.commerce.productDescription()
             };
-            const response = yield request.put('/api/review/update').send(updatedReview);
+            const response = yield request.put('/api/review/update')
+                .set('Authorization', `Bearer ${token}`)
+                .send(updatedReview);
             expect(response.status).toBe(200);
             expect(response.body).toHaveProperty('message');
             expect(response.body.message).toEqual('Review updated successfully');
@@ -108,28 +108,21 @@ describe('Review controller', () => {
     });
     describe('DELETE /api/review/delete', () => {
         test('Should return status 200', () => __awaiter(void 0, void 0, void 0, function* () {
-            const { reviewUser, reviewProduct } = yield (0, testUtils_1.userAndProductGenerator)(request);
-            const review = {
-                rating: faker_1.faker.number.int({ min: 1, max: 5 }),
-                title: faker_1.faker.commerce.productAdjective(),
-                comments: faker_1.faker.commerce.productDescription(),
-                user: reviewUser.email,
-                product: reviewProduct._id
-            };
-            const reviewCreateResponse = yield request.post('/api/review/create').send(review);
-            const { _id } = reviewCreateResponse.body.data;
+            const { review, user, token } = yield (0, testUtils_1.reviewGenerator)(request);
             const reviewDelete = {
-                reviewId: _id,
-                user: reviewUser.email,
-                productId: reviewProduct._id
+                reviewId: review._id,
+                user,
+                product: review.product
             };
-            const response = yield request.delete('/api/review/delete').send(reviewDelete);
+            const response = yield request.delete('/api/review/delete')
+                .set('Authorization', `Bearer ${token}`)
+                .send(reviewDelete);
             expect(response.status).toBe(200);
             expect(response.body).toHaveProperty('message');
             expect(response.body.message).toEqual('Review deleted successfully');
             expect(response.body).toHaveProperty('data');
             expect(response.body.data.title).toEqual(review.title);
             expect(response.body.data.comments).toEqual(review.comments);
-        }));
+        }), 10000);
     });
 });

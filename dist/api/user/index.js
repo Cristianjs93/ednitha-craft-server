@@ -2,10 +2,12 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const user_controller_1 = require("./user.controller");
+const auth_controller_1 = require("../../auth/auth.controller");
+const formDataProccesor_1 = require("../../middlewares/formDataProccesor");
 const router = (0, express_1.Router)();
-router.post('/register', user_controller_1.createUserHandler);
-router.get('/', user_controller_1.getAllUsersHandler);
-router.get('/email', user_controller_1.getUserByEmailHandler);
-router.put('/update', user_controller_1.updateUserHandler);
-router.delete('/delete', user_controller_1.deleteUserHandler);
+router.post('/register', formDataProccesor_1.formDataProccesor, user_controller_1.createUserHandler);
+router.get('/', auth_controller_1.isAuthenticated, (0, auth_controller_1.hasRole)(['ADMIN']), user_controller_1.getAllUsersHandler);
+router.get('/email', auth_controller_1.isAuthenticated, (0, auth_controller_1.hasRole)(['ADMIN']), user_controller_1.getUserByEmailHandler);
+router.put('/update', auth_controller_1.isAuthenticated, (0, auth_controller_1.hasRole)(['USER', 'ADMIN']), formDataProccesor_1.formDataProccesor, user_controller_1.updateUserHandler);
+router.delete('/delete', auth_controller_1.isAuthenticated, (0, auth_controller_1.hasRole)(['USER', 'ADMIN']), user_controller_1.deleteUserHandler);
 exports.default = router;

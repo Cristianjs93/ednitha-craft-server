@@ -11,7 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.userSchema = void 0;
 const mongoose_1 = require("mongoose");
-const regex_1 = require("../utils/regex");
+const regex_1 = require("../../assets/data/regex");
 exports.userSchema = new mongoose_1.Schema({
     name: {
         type: String,
@@ -52,7 +52,7 @@ exports.userSchema = new mongoose_1.Schema({
     },
     avatar: {
         type: String,
-        required: false
+        required: [true, 'Avatar is required']
     },
     role: {
         type: String,
@@ -66,6 +66,10 @@ exports.userSchema = new mongoose_1.Schema({
     },
     reviews: {
         type: [{ type: mongoose_1.Schema.Types.ObjectId, ref: 'review' }],
+        required: false
+    },
+    resetToken: {
+        type: String,
         required: false
     }
 }, {
