@@ -31,5 +31,4 @@ jobs:
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
           DB_CONNECTION_STRING: ${{ secrets.DB_CONNECTION_STRING }}
           DB_CONNECTION_STRING_TEST: ${{ secrets.DB_CONNECTION_STRING_TEST }}
-          NODE_ENV: ${{ secrets.NODE_ENV }}
         run: npm run test
